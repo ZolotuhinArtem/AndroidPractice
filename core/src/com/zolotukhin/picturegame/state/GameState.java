@@ -126,6 +126,8 @@ public class GameState extends State implements Button.ButtonEventListener {
         updateFallingItems(delta);
         updateSimpleObjects(delta);
 
+        player.update(delta);
+
         hud.setPoints(player.getPoints());
         hud.setLives(player.getLives());
 

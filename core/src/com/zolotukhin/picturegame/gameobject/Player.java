@@ -1,7 +1,10 @@
 package com.zolotukhin.picturegame.gameobject;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Artem Zolotukhin on 7/10/17.
@@ -27,6 +30,10 @@ public class Player extends GameObject {
 
     private Texture texture;
 
+    private TextureRegion currentFrame;
+
+    Animation<TextureRegion> animation;
+
     public void addPoints(int i) {
         points += i;
     }
@@ -48,6 +55,14 @@ public class Player extends GameObject {
         texture = new Texture("avatar.jpg");
         points = 0;
         lives = START_LIVES;
+
+
+        Array<TextureRegion> textureRegions = new Array<>();
+        for(int i = 0 ; i < 4; i++) {
+            textureRegions.add(new TextureRegion(texture, i * 8, 0, 32, 32));
+        }
+
+        animation = new Animation<TextureRegion>(0.1f, textureRegions);
     }
 
 
@@ -74,12 +89,15 @@ public class Player extends GameObject {
 
     @Override
     public void update(float delta) {
-
+        currentFrame = animation.getKeyFrame(delta, true);
     }
 
     @Override
     public void renderWithoutBeginEnd(SpriteBatch batch) {
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+
+        if (currentFrame != null) {
+            batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
+        }
     }
 
     @Override
