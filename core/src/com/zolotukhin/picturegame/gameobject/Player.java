@@ -31,6 +31,7 @@ public class Player extends GameObject {
     private Texture texture;
 
     private TextureRegion currentFrame;
+    private float stateTime;
 
     Animation<TextureRegion> animation;
 
@@ -57,12 +58,21 @@ public class Player extends GameObject {
         lives = START_LIVES;
 
 
-        Array<TextureRegion> textureRegions = new Array<>();
-        for(int i = 0 ; i < 4; i++) {
-            textureRegions.add(new TextureRegion(texture, i * 8, 0, 32, 32));
+        //Array<TextureRegion> textureRegions = new Array<>();
+        TextureRegion[][] textureRegions = TextureRegion.split(texture, 8, 32);
+
+        TextureRegion[] textureRegions1 = new TextureRegion[4];
+        int index = 0;
+        for(int i = 0; i < textureRegions.length; i++) {
+            for (int j =0; j < textureRegions[i].length; j++) {
+                textureRegions1[index++] = textureRegions[i][j];
+            }
         }
 
-        animation = new Animation<TextureRegion>(0.1f, textureRegions);
+        stateTime = 0;
+
+        animation = new Animation<TextureRegion>(0.1f, textureRegions1);
+
     }
 
 
@@ -89,7 +99,10 @@ public class Player extends GameObject {
 
     @Override
     public void update(float delta) {
-        currentFrame = animation.getKeyFrame(delta, true);
+        stateTime += delta;
+        currentFrame = animation.getKeyFrame(stateTime, true);
+
+
     }
 
     @Override

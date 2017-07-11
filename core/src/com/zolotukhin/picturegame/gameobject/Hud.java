@@ -19,7 +19,7 @@ public class Hud extends GameObject {
     private float liveSize;
     private int fontSizePixels;
 
-    public Hud(float x, float y, int fontSizePixels,float liveSize) {
+    public Hud(float x, float y, int fontSizePixels, float liveSize) {
         super(x, y);
         points = 0;
         lives = 0;
@@ -31,7 +31,6 @@ public class Hud extends GameObject {
         parameter.size = fontSizePixels;
         font = generator.generateFont(parameter);
         generator.dispose();
-
     }
 
 
@@ -43,7 +42,7 @@ public class Hud extends GameObject {
     @Override
     public void renderWithoutBeginEnd(SpriteBatch batch) {
         for (int i = 0; i < lives; i++) {
-            batch.draw(liveImage, getX()+i*liveSize,getY()-fontSizePixels,liveSize,liveSize);
+            batch.draw(liveImage, getX() + i * liveSize, getY() - fontSizePixels, liveSize, liveSize);
         }
 
         font.draw(batch, "\nPoints: " + points, getX(), getY());
