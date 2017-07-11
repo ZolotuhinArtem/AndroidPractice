@@ -26,7 +26,6 @@ public class JsonPictureRepository implements PictureRepository {
             Reader reader = Gdx.files.internal(FILE_PATH).reader();
             dataPicture = gson.fromJson(reader, DataPicture.class);
         }
-
     }
 
     @Override

@@ -1,11 +1,8 @@
 package com.zolotukhin.picturegame.gameobject;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.zolotukhin.picturegame.state.State;
@@ -212,5 +209,4 @@ public class Button extends GameObject {
     public interface ButtonEventListener {
         void onEvent(Button button, Event event);
     }
-
 }

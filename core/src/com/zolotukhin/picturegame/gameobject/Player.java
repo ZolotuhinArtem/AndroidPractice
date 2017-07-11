@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
+import com.zolotukhin.picturegame.builder.AnimationBuilder;
 
 /**
  * Created by Artem Zolotukhin on 7/10/17.
@@ -53,26 +53,15 @@ public class Player extends GameObject {
         float factSpriteHeight = screenWidth * SPRITE_HEIGHT_PART_OF_WIDTH;
         setWidth(factSpriteWidth);
         setHeight(factSpriteHeight);
-        texture = new Texture("avatar.jpg");
+        texture = new Texture("avatar.png");
         points = 0;
         lives = START_LIVES;
 
 
-        //Array<TextureRegion> textureRegions = new Array<>();
-        TextureRegion[][] textureRegions = TextureRegion.split(texture, 8, 32);
-
-        TextureRegion[] textureRegions1 = new TextureRegion[4];
-        int index = 0;
-        for(int i = 0; i < textureRegions.length; i++) {
-            for (int j =0; j < textureRegions[i].length; j++) {
-                textureRegions1[index++] = textureRegions[i][j];
-            }
-        }
-
+        AnimationBuilder animationBuilder = new AnimationBuilder();
+        animation = animationBuilder.from(texture, 0.1f, 1, 4);
+        animation.setPlayMode(Animation.PlayMode.LOOP);
         stateTime = 0;
-
-        animation = new Animation<TextureRegion>(0.1f, textureRegions1);
-
     }
 
 
@@ -101,8 +90,6 @@ public class Player extends GameObject {
     public void update(float delta) {
         stateTime += delta;
         currentFrame = animation.getKeyFrame(stateTime, true);
-
-
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.zolotukhin.picturegame.factory;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.zolotukhin.picturegame.factory.FallItemFactory;
 import com.zolotukhin.picturegame.gameobject.FallingItem;
 import com.zolotukhin.picturegame.gameobject.Player;
 

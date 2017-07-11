@@ -77,7 +77,7 @@ public abstract class GameObject implements Disposable {
         return collisionBody.getWidth();
     }
 
-    public float getHeight(){
+    public float getHeight() {
         return collisionBody.getHeight();
     }
 
@@ -104,5 +104,4 @@ public abstract class GameObject implements Disposable {
 
     @Override
     public abstract void dispose();
-
 }

@@ -15,5 +15,4 @@ public interface PictureRepository {
     List<Picture> getByName(String name);
 
     List<Painter> getAllPainters();
-
 }

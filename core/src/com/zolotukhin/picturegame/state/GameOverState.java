@@ -26,8 +26,6 @@ public class GameOverState extends State {
         parameter.size = Math.round(FONT_SIZE * getUnit());
         font = generator.generateFont(parameter);
         generator.dispose();
-
-
     }
 
     @Override

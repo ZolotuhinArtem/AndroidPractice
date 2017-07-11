@@ -9,5 +9,4 @@ import com.zolotukhin.picturegame.gameobject.FallingItem;
 public interface FallItemFactory {
 
     FallingItem getItem();
-
 }
