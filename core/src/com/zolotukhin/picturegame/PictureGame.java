@@ -26,7 +26,8 @@ public class PictureGame extends ApplicationAdapter implements AbstractGame {
 	public void create() {
 		batch = new SpriteBatch();
 		gsm = new GameManager(this);
-		Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+//		Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
 		gsm.pushState(new GameState(gsm));
 	}
 

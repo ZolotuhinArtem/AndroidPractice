@@ -1,5 +1,6 @@
 package com.zolotukhin.picturegame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.zolotukhin.picturegame.state.State;

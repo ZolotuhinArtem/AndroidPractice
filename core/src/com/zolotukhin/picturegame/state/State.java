@@ -16,6 +16,8 @@ public abstract class State {
     protected Vector3 vector;
     protected GameManager gsm;
 
+    private int unit;
+
     private float pointX, pointY;
 
     private boolean isTouched;
@@ -26,7 +28,9 @@ public abstract class State {
         pointX = 0;
         isTouched = false;
         vector = new Vector3(0, 0, 0);
-        camera = new OrthographicCamera(gsm.getScreenWidth(), gsm.getScreenHeight());
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, gsm.getScreenWidth(), gsm.getScreenHeight());
+        unit = gsm.getScreenWidth();
     }
 
     public void handleInput() {
@@ -61,5 +65,9 @@ public abstract class State {
 
     public boolean isTouched() {
         return isTouched;
+    }
+
+    public int getUnit() {
+        return unit;
     }
 }
