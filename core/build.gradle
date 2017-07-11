@@ -5,6 +5,10 @@ sourceCompatibility = 1.7
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
+dependencies {
+    compile 'com.google.code.gson:gson:2.8.1'
+}
+
 
 eclipse.project {
     name = appName + "-core"

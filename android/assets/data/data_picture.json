@@ -1,0 +1,17 @@
+{
+  "pictures": [
+    {
+      "names": {
+        "en": "picture",
+        "ru": "картина"
+      },
+      "painter": {
+        "names": {
+          "en": "Zolotukhin",
+          "ru": "Золотухин"
+        }
+      },
+      "path": "data/badlogic.jpg"
+    }
+  ]
+}
