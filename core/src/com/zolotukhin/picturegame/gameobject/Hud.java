@@ -1,6 +1,7 @@
 package com.zolotukhin.picturegame.gameobject;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -12,15 +13,19 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 public class Hud extends GameObject {
 
     private BitmapFont font;
-
     private int points;
-
     private int lives;
+    private Texture liveImage;
+    private float liveSize;
+    private int fontSizePixels;
 
-    public Hud(float x, float y, int fontSizePixels) {
+    public Hud(float x, float y, int fontSizePixels,float liveSize) {
         super(x, y);
         points = 0;
         lives = 0;
+        this.liveSize = liveSize;
+        this.fontSizePixels = fontSizePixels;
+        liveImage = new Texture("live.png");
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pixel-font.otf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = fontSizePixels;
@@ -37,7 +42,11 @@ public class Hud extends GameObject {
 
     @Override
     public void renderWithoutBeginEnd(SpriteBatch batch) {
-        font.draw(batch, "Lives: " + lives + "\nPoints: " + points, getX(), getY());
+        for (int i = 0; i < lives; i++) {
+            batch.draw(liveImage, getX()+i*liveSize,getY()-fontSizePixels,liveSize,liveSize);
+        }
+
+        font.draw(batch, "\nPoints: " + points, getX(), getY());
     }
 
     @Override
