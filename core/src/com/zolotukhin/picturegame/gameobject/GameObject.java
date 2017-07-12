@@ -2,6 +2,7 @@ package com.zolotukhin.picturegame.gameobject;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -14,9 +15,15 @@ public abstract class GameObject implements Disposable {
 
     private boolean isDead;
 
+    private Array<GameObject> collisionObject;
+
+    private Array<CollisionListener> collisionListeners;
+
     public GameObject(float x, float y, float width, float height) {
         collisionBody = new Rectangle(x, y, width, height);
         isDead = false;
+        collisionObject = new Array<>();
+        collisionListeners = new Array<>();
     }
 
     public GameObject(float x, float y) {
@@ -98,10 +105,52 @@ public abstract class GameObject implements Disposable {
         return isDead;
     }
 
-    public abstract void update(float delta);
+    public void update(float delta) {
+        for(GameObject i : collisionObject) {
+            if (getCollisionBody().overlaps(i.getCollisionBody())) {
+                for (CollisionListener j : collisionListeners) {
+                    j.onCollision(this, i);
+                }
+            }
+        }
+    }
 
     public abstract void renderWithoutBeginEnd(SpriteBatch batch);
 
+    public GameObject addCollisionListener(CollisionListener listener) {
+        collisionListeners.add(listener);
+        return this;
+    }
+
+    public GameObject removeCollisionListener(CollisionListener listener) {
+        collisionListeners.removeValue(listener, true);
+        return this;
+    }
+
+    public GameObject clearCollisionListeners(){
+        collisionListeners.clear();
+        return this;
+    }
+
+    public GameObject addCollisionObject(GameObject gameObject) {
+        collisionObject.add(gameObject);
+        return this;
+    }
+
+    public GameObject removeCollisionObject(GameObject gameObject) {
+        collisionObject.removeValue(gameObject, true);
+        return this;
+    }
+
+    public GameObject clearCollisionObject(GameObject gameObject) {
+        collisionObject.clear();
+        return this;
+    }
+
     @Override
     public abstract void dispose();
+
+    public interface CollisionListener{
+        void onCollision(GameObject object, GameObject cause);
+    }
 }

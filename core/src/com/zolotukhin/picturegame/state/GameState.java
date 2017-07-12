@@ -64,8 +64,6 @@ public class GameState extends State implements Button.ButtonEventListener {
 
         player = new Player(gsm.getScreenWidth() / 2, BOTTOM_PANEL_HEIGHT * unit + 4, unit);
 
-        fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player);
-
         fallingItems = new Array<>();
 
         spaceInterval = START_SPACE_INTERVAL_SPAWN_ITEM;
@@ -115,6 +113,9 @@ public class GameState extends State implements Button.ButtonEventListener {
 
 
         floor = new Floor(0, 0, gsm.getScreenWidth(), BOTTOM_PANEL_HEIGHT * unit);
+        GameObject.CollisionListener collisionListener = new GameStateCollisionListener(player, this);
+        fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
+
         simpleObjects.add(floor);
     }
 

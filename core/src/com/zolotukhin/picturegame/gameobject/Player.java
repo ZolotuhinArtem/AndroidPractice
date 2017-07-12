@@ -59,7 +59,7 @@ public class Player extends GameObject {
 
 
         AnimationBuilder animationBuilder = new AnimationBuilder();
-        animation = animationBuilder.from(texture, 0.1f, 1, 4);
+        animation = animationBuilder.from(texture, 0.1f, 2, 2);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         stateTime = 0;
     }

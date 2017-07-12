@@ -35,12 +35,14 @@ public class PauseState extends State implements Button.ButtonEventListener {
                 gsm.getScreenHeight() / 2 - btnContinue.getHeight() / 2);
         btnContinue.setTextureSimple(new Texture("btn_simple.png"), true);
         btnContinue.setTexturePressed(new Texture("btn_pressed.png"), true);
+
     }
 
     @Override
     public void update(float delta) {
 
         btnContinue.update(delta);
+        
     }
 
     @Override
