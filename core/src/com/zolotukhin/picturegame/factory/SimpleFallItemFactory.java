@@ -6,7 +6,6 @@ import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
-import com.zolotukhin.picturegame.state.GameState;
 
 /**
  * Created by Artem Zolotukhin on 7/10/17.

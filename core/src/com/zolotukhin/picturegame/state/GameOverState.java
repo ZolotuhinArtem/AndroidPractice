@@ -109,7 +109,7 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     public void onEvent(Button button, Button.Event event) {
         if (event == Button.Event.RELEASED) {
             if (button == btnRefresh) {
-                gsm.setState(new GameState(gsm));
+                gsm.setState(new com.zolotukhin.picturegame.state.gamestate.GameState(gsm));
             } else if (button == btnExit) {
                 System.exit(0);
             }

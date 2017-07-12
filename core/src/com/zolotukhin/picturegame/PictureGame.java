@@ -3,10 +3,8 @@ package com.zolotukhin.picturegame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.zolotukhin.picturegame.state.GameState;
+import com.zolotukhin.picturegame.state.gamestate.GameState;
 
 public class PictureGame extends ApplicationAdapter implements AbstractGame {
 	private int screenWidth;

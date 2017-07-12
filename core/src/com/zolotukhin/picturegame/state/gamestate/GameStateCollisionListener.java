@@ -1,10 +1,11 @@
-package com.zolotukhin.picturegame.state;
+package com.zolotukhin.picturegame.state.gamestate;
 
 import com.zolotukhin.picturegame.gameobject.FallingItem;
 import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
+import com.zolotukhin.picturegame.state.State;
 
 /**
  * Created by Artem Zolotukhin on 7/12/17.

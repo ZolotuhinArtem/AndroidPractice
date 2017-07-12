@@ -1,4 +1,4 @@
-package com.zolotukhin.picturegame.state;
+package com.zolotukhin.picturegame.state.gamestate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.builder.ButtonBuilder;
 import com.zolotukhin.picturegame.factory.FallItemFactory;
@@ -20,6 +21,9 @@ import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Hud;
 import com.zolotukhin.picturegame.gameobject.Player;
+import com.zolotukhin.picturegame.state.GameOverState;
+import com.zolotukhin.picturegame.state.PauseState;
+import com.zolotukhin.picturegame.state.State;
 import com.zolotukhin.picturegame.utils.TextureUtils;
 
 import java.util.Iterator;
@@ -68,9 +72,11 @@ public class GameState extends State implements Button.ButtonEventListener {
     public GameState(GameManager gsm) {
         super(gsm);
 
-        stage = new Stage();
+        stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         Table table = new Table();
+
+
         table.setFillParent(true);
         stage.addActor(table);
         buttonTexture = new Texture("btn_simple.png");
@@ -78,10 +84,13 @@ public class GameState extends State implements Button.ButtonEventListener {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.up = new TextureRegionDrawable(btn[0]);
         style.down = new TextureRegionDrawable(btn[1]);
+        font = new BitmapFont();
+        style.font = new BitmapFont();
+
 
         TextButton btnTest = new TextButton("Hell", style);
-        table.add(btnTest);
-
+        btnTest.setBounds(0, 80, 300, 500);
+        table.add(btnTest).padLeft(64).width(500).height(500);
         simpleObjects = new Array<>();
         float unit = gsm.getScreenWidth();
 
