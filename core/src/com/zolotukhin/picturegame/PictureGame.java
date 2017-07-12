@@ -38,7 +38,12 @@ public class PictureGame extends ApplicationAdapter implements AbstractGame {
 		gsm.render(batch);
 	}
 
-    @Override
+	@Override
+	public void resize(int width, int height) {
+		gsm.resize(width, height);
+	}
+
+	@Override
     public void pause() {
         gsm.pause();
     }

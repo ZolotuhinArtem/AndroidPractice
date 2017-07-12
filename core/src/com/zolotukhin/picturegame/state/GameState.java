@@ -1,7 +1,14 @@
 package com.zolotukhin.picturegame.state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.builder.ButtonBuilder;
@@ -13,6 +20,7 @@ import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Hud;
 import com.zolotukhin.picturegame.gameobject.Player;
+import com.zolotukhin.picturegame.utils.TextureUtils;
 
 import java.util.Iterator;
 
@@ -53,9 +61,26 @@ public class GameState extends State implements Button.ButtonEventListener {
 
     private boolean isLeftPressed, isRightPressed;
 
+    private Stage stage;
+    private Texture buttonTexture;
+    private BitmapFont font;
 
     public GameState(GameManager gsm) {
         super(gsm);
+
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+        buttonTexture = new Texture("btn_simple.png");
+        TextureRegion[] btn = (new TextureUtils()).split(buttonTexture, 1, 2);
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.up = new TextureRegionDrawable(btn[0]);
+        style.down = new TextureRegionDrawable(btn[1]);
+
+        TextButton btnTest = new TextButton("Hell", style);
+        table.add(btnTest);
 
         simpleObjects = new Array<>();
         float unit = gsm.getScreenWidth();
@@ -121,7 +146,14 @@ public class GameState extends State implements Button.ButtonEventListener {
 
 
     @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
+    }
+
+    @Override
     public void update(float delta) {
+
+        stage.act(delta);
 
         checkPlayerMovementControl(delta);
 
@@ -203,7 +235,7 @@ public class GameState extends State implements Button.ButtonEventListener {
     public void render(SpriteBatch batch) {
 
         camera.update();
-
+        stage.draw();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
@@ -241,6 +273,8 @@ public class GameState extends State implements Button.ButtonEventListener {
             i.dispose();
         }
 
+        buttonTexture.dispose();
+        font.dispose();
         player.dispose();
         hud.dispose();
     }

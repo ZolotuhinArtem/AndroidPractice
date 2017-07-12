@@ -20,28 +20,41 @@ public class GameManager implements Disposable {
 
     private HashMap<String, Object> parcels;
 
+    private int lastWidth, lastHeight;
+
     public GameManager(AbstractGame abstractGame) {
         states = new Stack<State>();
         this.abstractGame = abstractGame;
+        lastWidth = abstractGame.getScreenWidth();
+        lastHeight = abstractGame.getScreenHeight();
     }
 
     public void pushState(State state) {
         states.push(state);
+        state.resize(lastWidth, lastHeight);
     }
 
     public void popState() {
         states.pop().dispose();
+        states.peek().resize(lastWidth, lastHeight);
     }
 
     public void setState(State state) {
         states.pop().dispose();
         states.push(state);
+        state.resize(lastWidth, lastHeight);
     }
 
     public void update(float delta){
         states.peek().handleInput();
         states.peek().update(delta);
 
+    }
+
+    public void resize(int width, int height){
+        this.lastWidth = width;
+        this.lastHeight = height;
+        states.peek().resize(lastWidth, lastHeight);
     }
 
     public void render(SpriteBatch batch) {

@@ -45,6 +45,8 @@ public abstract class State {
         }
     }
 
+    public void resize(int width, int height){}
+
     public abstract void update(float delta);
 
     public abstract void render(SpriteBatch batch);
