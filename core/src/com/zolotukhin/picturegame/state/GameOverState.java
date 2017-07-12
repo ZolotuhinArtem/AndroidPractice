@@ -70,7 +70,6 @@ public class GameOverState extends State implements Button.ButtonEventListener {
                 gsm.getScreenHeight() / 2 - btnRefresh.getHeight() - btnExit.getWidth() / 2 - btnExit.getWidth() / 8);
         btnExit.setTextureSimple(new Texture("btn_simple.png"), true);
         btnExit.setTexturePressed(new Texture("btn_pressed.png"), true);
-
     }
 
     @Override

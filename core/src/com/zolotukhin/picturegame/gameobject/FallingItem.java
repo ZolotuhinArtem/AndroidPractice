@@ -26,10 +26,9 @@ public class FallingItem extends GameObject {
 
     public FallingItem(float x, float y, float screenWidth) {
         this(x, y, screenWidth, null);
-
     }
 
-    public FallingItem(float x, float y, float screenWidth, Player player ) {
+    public FallingItem(float x, float y, float screenWidth, Player player) {
         super(x, y);
 
         this.screenWidth = screenWidth;
@@ -46,7 +45,7 @@ public class FallingItem extends GameObject {
     @Override
     public void update(float delta) {
 
-        addY( -fallingSpeed * delta );
+        addY(-fallingSpeed * delta);
         if (floor != null) {
             if (getCollisionBody().overlaps(floor.getCollisionBody())) {
                 player.subLives(1);
@@ -61,9 +60,7 @@ public class FallingItem extends GameObject {
                 return;
             }
         }
-
     }
-
 
 
     @Override

@@ -35,7 +35,7 @@ public class GameState extends State implements Button.ButtonEventListener {
     public static final float ARROW_BUTTON_HEIGHT = 0.12f;
 
 
-    public static final float HUD_MARGIN = 24;
+    public static final float HUD_MARGIN = 0.033f;
     public static final float HUD_LIVE = 0.07f;
 
     private Player player;
@@ -71,8 +71,8 @@ public class GameState extends State implements Button.ButtonEventListener {
         spaceInterval = START_SPACE_INTERVAL_SPAWN_ITEM;
 
         int fontSize = Math.round(unit * 0.05f);
-
-        hud = new Hud(HUD_MARGIN, gsm.getScreenHeight() - fontSize, fontSize,gsm.getScreenWidth()*HUD_LIVE);
+        float hudLiveSize = unit * HUD_LIVE;
+        hud = new Hud(HUD_MARGIN * unit, gsm.getScreenHeight() - HUD_MARGIN * unit, fontSize, hudLiveSize);
         simpleObjects.add(hud);
 
         isLeftPressed = false;
@@ -254,17 +254,15 @@ public class GameState extends State implements Button.ButtonEventListener {
                 }
                 break;
             case HOLDING:
-               if (button == btnArrowLeft) {
-                   isLeftPressed = true;
-                   break;
-               }
-               if (button == btnArrowRight) {
-                   isRightPressed = true;
-                   break;
-               }
-               break;
+                if (button == btnArrowLeft) {
+                    isLeftPressed = true;
+                    break;
+                }
+                if (button == btnArrowRight) {
+                    isRightPressed = true;
+                    break;
+                }
+                break;
         }
-
-
     }
 }
