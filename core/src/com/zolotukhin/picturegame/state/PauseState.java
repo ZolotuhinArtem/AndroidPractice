@@ -72,7 +72,7 @@ public class PauseState extends State implements Button.ButtonEventListener {
     @Override
     public void onEvent(Button button, Button.Event event) {
         if (event == Button.Event.RELEASED) {
-            gsm.popState();
+            gameManager.popState();
         }
     }
 }

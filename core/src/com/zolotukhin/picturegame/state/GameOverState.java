@@ -35,7 +35,7 @@ public class GameOverState extends State implements Button.ButtonEventListener {
 
     public GameOverState(GameManager gsm) {
         super(gsm);
-//        quantityPoints = (int) gsm.getParcel(POINTS_KEY);
+//        quantityPoints = (int) gameManager.getParcel(POINTS_KEY);
         quantityPoints = 0;
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pixel-font.otf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -81,12 +81,12 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     @Override
     public void render(SpriteBatch batch) {
         batch.begin();
-//        quantityPoints = (int) gsm.getParcel(POINTS_KEY);
+//        quantityPoints = (int) gameManager.getParcel(POINTS_KEY);
         btnRefresh.renderWithoutBeginEnd(batch);
         btnExit.renderWithoutBeginEnd(batch);
         font.draw(batch, "GAME OVER! " +
-                        "\nPoints: " + quantityPoints, 0, gsm.getScreenHeight() / 4 * 3,
-                gsm.getScreenWidth(), Align.center, false);
+                        "\nPoints: " + quantityPoints, 0, gameManager.getScreenHeight() / 4 * 3,
+                gameManager.getScreenWidth(), Align.center, false);
         batch.end();
     }
 
@@ -109,7 +109,7 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     public void onEvent(Button button, Button.Event event) {
         if (event == Button.Event.RELEASED) {
             if (button == btnRefresh) {
-                gsm.setState(new com.zolotukhin.picturegame.state.gamestate.GameState(gsm));
+                gameManager.setState(new com.zolotukhin.picturegame.state.gamestate.GameState(gameManager));
             } else if (button == btnExit) {
                 System.exit(0);
             }

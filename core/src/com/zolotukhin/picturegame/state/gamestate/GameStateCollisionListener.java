@@ -39,8 +39,7 @@ public class GameStateCollisionListener implements GameObject.CollisionListener 
                     player.subLives(1);
                 } else {
                     if (cause instanceof Player) {
-                        player.addPoints(((FallingItem) object).getCost());
-                        //TODO SCREEN PICTURE
+                        
                     }
                 }
 

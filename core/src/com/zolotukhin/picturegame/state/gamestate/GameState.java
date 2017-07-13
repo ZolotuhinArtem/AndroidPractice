@@ -1,16 +1,8 @@
 package com.zolotukhin.picturegame.state.gamestate;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.builder.ButtonBuilder;
 import com.zolotukhin.picturegame.factory.FallItemFactory;
@@ -24,7 +16,6 @@ import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.state.GameOverState;
 import com.zolotukhin.picturegame.state.PauseState;
 import com.zolotukhin.picturegame.state.State;
-import com.zolotukhin.picturegame.utils.TextureUtils;
 
 import java.util.Iterator;
 
@@ -65,32 +56,9 @@ public class GameState extends State implements Button.ButtonEventListener {
 
     private boolean isLeftPressed, isRightPressed;
 
-    private Stage stage;
-    private Texture buttonTexture;
-    private BitmapFont font;
-
     public GameState(GameManager gsm) {
         super(gsm);
 
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-        Table table = new Table();
-
-
-        table.setFillParent(true);
-        stage.addActor(table);
-        buttonTexture = new Texture("btn_simple.png");
-        TextureRegion[] btn = (new TextureUtils()).split(buttonTexture, 1, 2);
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.up = new TextureRegionDrawable(btn[0]);
-        style.down = new TextureRegionDrawable(btn[1]);
-        font = new BitmapFont();
-        style.font = new BitmapFont();
-
-
-        TextButton btnTest = new TextButton("Hell", style);
-        btnTest.setBounds(0, 80, 300, 500);
-        table.add(btnTest).padLeft(64).width(500).height(500);
         simpleObjects = new Array<>();
         float unit = gsm.getScreenWidth();
 
@@ -155,14 +123,8 @@ public class GameState extends State implements Button.ButtonEventListener {
 
 
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height);
-    }
-
-    @Override
     public void update(float delta) {
 
-        stage.act(delta);
 
         checkPlayerMovementControl(delta);
 
@@ -176,7 +138,7 @@ public class GameState extends State implements Button.ButtonEventListener {
         hud.setLives(player.getLives());
 
         if (player.getLives() <= 0) {
-            gsm.setState(new GameOverState(gsm));
+            gameManager.setState(new GameOverState(gameManager));
         }
     }
 
@@ -225,7 +187,7 @@ public class GameState extends State implements Button.ButtonEventListener {
             fallingItems.add(lastItem);
         } else {
 
-            if (lastItem.getY() < gsm.getScreenHeight() - gsm.getScreenWidth() * spaceInterval - lastItem.getHeight()) {
+            if (lastItem.getY() < gameManager.getScreenHeight() - gameManager.getScreenWidth() * spaceInterval - lastItem.getHeight()) {
 
                 lastItem = fallItemFactory.getItem();
                 fallingItems.add(lastItem);
@@ -244,7 +206,6 @@ public class GameState extends State implements Button.ButtonEventListener {
     public void render(SpriteBatch batch) {
 
         camera.update();
-        stage.draw();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
@@ -268,7 +229,7 @@ public class GameState extends State implements Button.ButtonEventListener {
     @Override
     public void pause() {
 
-        gsm.pushState(new PauseState(gsm));
+        gameManager.pushState(new PauseState(gameManager));
     }
 
     @Override
@@ -282,8 +243,6 @@ public class GameState extends State implements Button.ButtonEventListener {
             i.dispose();
         }
 
-        buttonTexture.dispose();
-        font.dispose();
         player.dispose();
         hud.dispose();
     }
@@ -294,7 +253,7 @@ public class GameState extends State implements Button.ButtonEventListener {
         switch (event) {
             case RELEASED:
                 if (button == btnPause) {
-                    gsm.pushState(new PauseState(gsm));
+                    gameManager.pushState(new PauseState(gameManager));
                 }
                 break;
             case HOLDING:
