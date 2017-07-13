@@ -35,33 +35,33 @@ public class GameManager implements Disposable, FontProvider {
 
     public void pushState(State state) {
         states.push(state);
-        state.resize(lastWidth, lastHeight);
+        state.onResize(lastWidth, lastHeight);
     }
 
     public void popState() {
-        states.pop().dispose();
-        states.peek().resize(lastWidth, lastHeight);
+        states.pop().onDispose();
+        states.peek().onResize(lastWidth, lastHeight);
     }
 
     public void setState(State state) {
-        states.pop().dispose();
+        states.pop().onDispose();
         states.push(state);
-        state.resize(lastWidth, lastHeight);
+        state.onResize(lastWidth, lastHeight);
     }
 
     public void update(float delta) {
         states.peek().handleInput();
-        states.peek().update(delta);
+        states.peek().onUpdate(delta);
     }
 
     public void resize(int width, int height) {
         this.lastWidth = width;
         this.lastHeight = height;
-        states.peek().resize(lastWidth, lastHeight);
+        states.peek().onResize(lastWidth, lastHeight);
     }
 
     public void render(SpriteBatch batch) {
-        states.peek().render(batch);
+        states.peek().onRender(batch);
     }
 
     public int getScreenWidth() {
@@ -85,11 +85,11 @@ public class GameManager implements Disposable, FontProvider {
     }
 
     public void pause() {
-        states.peek().pause();
+        states.peek().onPause();
     }
 
     public void resume() {
-        states.peek().resume();
+        states.peek().onResume();
     }
 
     @Override

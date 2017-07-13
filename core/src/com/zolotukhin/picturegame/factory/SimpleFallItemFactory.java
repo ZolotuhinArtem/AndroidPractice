@@ -15,7 +15,6 @@ public class SimpleFallItemFactory implements FallItemFactory {
 
     public static final int MIN_INTERVAL_SUPER_SPAWN = 7;
     public static final int MAX_INTERVAL_SUPER_SPAWN = 15;
-    public static final int SUPER_ITEM_COST = 5;
 
     private int screenWidth, screenHeight;
 
@@ -48,7 +47,6 @@ public class SimpleFallItemFactory implements FallItemFactory {
 
         if (counter == spawn) {
             fallingItem = new SuperPictureFallingItem(0, screenHeight, screenWidth);
-            fallingItem.setCost(SUPER_ITEM_COST);
             counter = 0;
             spawn = MathUtils.random(MIN_INTERVAL_SUPER_SPAWN, MAX_INTERVAL_SUPER_SPAWN);
         } else {

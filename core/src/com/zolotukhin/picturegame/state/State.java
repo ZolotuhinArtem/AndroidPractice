@@ -33,6 +33,26 @@ public abstract class State {
         unit = gameManager.getScreenWidth();
     }
 
+
+    public void onResize(int width, int height) {
+    }
+
+    public void onUpdate(float delta) {
+    }
+
+    public void onRender(SpriteBatch batch) {
+    }
+
+    public void onPause() {
+    }
+
+    public void onResume() {
+    }
+
+    public void onDispose() {
+    }
+
+
     public void handleInput() {
         if (Gdx.input.isTouched()) {
             vector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -44,18 +64,6 @@ public abstract class State {
             isTouched = false;
         }
     }
-
-    public void resize(int width, int height){}
-
-    public abstract void update(float delta);
-
-    public abstract void render(SpriteBatch batch);
-
-    public abstract void pause();
-
-    public abstract void resume();
-
-    public abstract void dispose();
 
     public float getPointX() {
         return pointX;

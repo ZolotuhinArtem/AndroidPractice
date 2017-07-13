@@ -26,4 +26,19 @@ public class TextureUtils {
 
         return textureRegions;
     }
+
+    public TextureRegion getSquareThumbnail(Texture src) {
+
+        TextureRegion textureRegion;
+
+        if (src.getWidth() > src.getHeight()) {
+            int delta = (src.getWidth() - src.getHeight()) / 2;
+            textureRegion = new TextureRegion(src, delta, 0, src.getHeight(), src.getHeight());
+        } else {
+            int delta = (src.getHeight() - src.getWidth()) / 2;
+            textureRegion = new TextureRegion(src, 0, delta, src.getWidth(), src.getWidth());
+        }
+        return textureRegion;
+
+    }
 }

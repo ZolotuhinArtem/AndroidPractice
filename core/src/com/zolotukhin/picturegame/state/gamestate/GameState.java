@@ -19,6 +19,7 @@ import com.zolotukhin.picturegame.model.Painter;
 import com.zolotukhin.picturegame.model.PictureRepository;
 import com.zolotukhin.picturegame.state.GameOverState;
 import com.zolotukhin.picturegame.state.PauseState;
+import com.zolotukhin.picturegame.state.PictureChooseState;
 import com.zolotukhin.picturegame.state.State;
 
 import java.util.Iterator;
@@ -30,6 +31,7 @@ import java.util.Iterator;
 public class GameState extends State implements Button.ButtonEventListener, SuperItemCatchListener {
 
     public static final String PARAM_PAINTER = GameState.class.getName() + ":param_painter";
+    public static final String PARAM_PICTURE_CHOOSE_RESULT = GameState.class.getName() + ":param_picture_choose_result";
 
     private static final float MIN_SPACE_INTERVAL_SPAWN_ITEM = 0.2f;
 
@@ -72,7 +74,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         float unit = gsm.getScreenWidth();
 
         pictureRepository = new JsonPictureRepository();
-        //currentPainter = loadPainter();
+        currentPainter = loadPainter();
 
         camera.setToOrtho(false, gsm.getScreenWidth(), gsm.getScreenHeight());
 
@@ -136,7 +138,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     private Painter loadPainter() {
 
         //String painterSystemName = (String) gameManager.getParcel(PARAM_PAINTER);
-        String painterSystemName = (String) gameManager.getParcel("zolotuhin");
+        String painterSystemName = "da_vinci";
         Painter painter = pictureRepository.getPainterBySystemName(painterSystemName);
 
 
@@ -145,7 +147,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
 
     @Override
-    public void update(float delta) {
+    public void onUpdate(float delta) {
 
 
         checkPlayerMovementControl(delta);
@@ -158,6 +160,16 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
         hud.setPoints(player.getPoints());
         hud.setLives(player.getLives());
+
+        Boolean bool = (Boolean) gameManager.getParcel(PARAM_PICTURE_CHOOSE_RESULT);
+        if (bool != null) {
+            if (bool) {
+                player.addPoints(SuperPictureFallingItem.DEFAULT_COST);
+            } else {
+                player.subLives(1);
+            }
+            gameManager.putParcel(PARAM_PICTURE_CHOOSE_RESULT, null);
+        }
 
         if (player.getLives() <= 0) {
             gameManager.putParcel(GameOverState.POINTS_KEY, player.getPoints());
@@ -226,7 +238,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void onRender(SpriteBatch batch) {
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -250,18 +262,18 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     }
 
     @Override
-    public void pause() {
+    public void onPause() {
 
         gameManager.pushState(new PauseState(gameManager));
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
 
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         for (FallingItem i : fallingItems) {
             i.dispose();
         }
@@ -294,6 +306,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     @Override
     public void onCatch(SuperPictureFallingItem item) {
-
+        gameManager.putParcel(PictureChooseState.PARAM_PAINTER, currentPainter);
+        gameManager.pushState(new PictureChooseState(gameManager));
     }
 }

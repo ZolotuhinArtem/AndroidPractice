@@ -64,13 +64,13 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     }
 
     @Override
-    public void update(float delta) {
+    public void onUpdate(float delta) {
         btnRefresh.update(delta);
         btnExit.update(delta);
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void onRender(SpriteBatch batch) {
         batch.begin();
         btnRefresh.renderWithoutBeginEnd(batch);
         btnExit.renderWithoutBeginEnd(batch);
@@ -81,17 +81,17 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     }
 
     @Override
-    public void pause() {
+    public void onPause() {
 
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
 
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         font.dispose();
     }
 

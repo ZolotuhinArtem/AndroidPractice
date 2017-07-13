@@ -37,14 +37,14 @@ public class PauseState extends State implements Button.ButtonEventListener {
     }
 
     @Override
-    public void update(float delta) {
+    public void onUpdate(float delta) {
 
         btnContinue.update(delta);
         
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void onRender(SpriteBatch batch) {
         camera.update();
 
         batch.begin();
@@ -53,17 +53,17 @@ public class PauseState extends State implements Button.ButtonEventListener {
     }
 
     @Override
-    public void pause() {
+    public void onPause() {
 
     }
 
     @Override
-    public void resume() {
+    public void onResume() {
 
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         btnContinue.dispose();
     }
 
