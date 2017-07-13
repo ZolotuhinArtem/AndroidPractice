@@ -72,7 +72,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         float unit = gsm.getScreenWidth();
 
         pictureRepository = new JsonPictureRepository();
-        currentPainter = loadPainter();
+        //currentPainter = loadPainter();
 
         camera.setToOrtho(false, gsm.getScreenWidth(), gsm.getScreenHeight());
 
@@ -84,7 +84,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
         int fontSize = Math.round(unit * 0.05f);
         float hudLiveSize = unit * HUD_LIVE;
-        hud = new Hud(HUD_MARGIN * unit, gsm.getScreenHeight() - HUD_MARGIN * unit, fontSize, hudLiveSize);
+        hud = new Hud(HUD_MARGIN * unit, gsm.getScreenHeight() - HUD_MARGIN * unit, fontSize, hudLiveSize, gameManager);
         simpleObjects.add(hud);
 
         isLeftPressed = false;
@@ -160,6 +160,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         hud.setLives(player.getLives());
 
         if (player.getLives() <= 0) {
+            gameManager.putParcel(GameOverState.POINTS_KEY, player.getPoints());
             gameManager.setState(new GameOverState(gameManager));
         }
     }

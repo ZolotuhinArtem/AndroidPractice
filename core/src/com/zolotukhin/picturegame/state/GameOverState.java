@@ -1,11 +1,9 @@
 package com.zolotukhin.picturegame.state;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Align;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.builder.ButtonBuilder;
@@ -17,8 +15,8 @@ import com.zolotukhin.picturegame.gameobject.Button;
 
 public class GameOverState extends State implements Button.ButtonEventListener {
 
-    public static final float FONT_SIZE = 0.1f;
-    public static final float REFRESH_BUTTON_FONT_SIZE = 0.05f;
+    public static final float LABEL_FONT_SIZE = 0.1f;
+    public static final float EXIT_FONT_SIZE = 0.05f;
     public static final String POINTS_KEY = "points key";
 
     public static final float REFRESH_HEIGHT = 0.15f;
@@ -35,18 +33,13 @@ public class GameOverState extends State implements Button.ButtonEventListener {
 
     public GameOverState(GameManager gsm) {
         super(gsm);
-//        quantityPoints = (int) gameManager.getParcel(POINTS_KEY);
-        quantityPoints = 0;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pixel-font.otf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = Math.round(FONT_SIZE * getUnit());
-        font = generator.generateFont(parameter);
-        generator.dispose();
+        quantityPoints = (int) gameManager.getParcel(POINTS_KEY);
+        font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.WHITE);
 
         btnRefresh = new ButtonBuilder()
                 .state(this)
-                .width(REFRESH_WIDTH * gsm.getScreenWidth())
-                .height(REFRESH_HEIGHT * gsm.getScreenWidth())
+                .width(REFRESH_WIDTH * getUnit())
+                .height(REFRESH_HEIGHT * getUnit())
                 .addEventListener(this)
                 .build();
 
@@ -57,11 +50,9 @@ public class GameOverState extends State implements Button.ButtonEventListener {
 
         btnExit = new ButtonBuilder()
                 .state(this)
-                .width(EXIT_WIDTH * gsm.getScreenWidth())
-                .height(EXIT_HEIGHT * gsm.getScreenWidth())
-                .fontColor(Color.BLACK)
-                .fontFromAssets("pixel-font.otf", true)
-                .fontSize(Math.round(REFRESH_BUTTON_FONT_SIZE * gsm.getScreenWidth()))
+                .width(EXIT_WIDTH * getUnit())
+                .height(EXIT_HEIGHT * getUnit())
+                .font(gameManager.getDefaultFont(EXIT_FONT_SIZE * getUnit(), Color.BLACK), true)
                 .text("Exit")
                 .addEventListener(this)
                 .build();
@@ -81,7 +72,6 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     @Override
     public void render(SpriteBatch batch) {
         batch.begin();
-//        quantityPoints = (int) gameManager.getParcel(POINTS_KEY);
         btnRefresh.renderWithoutBeginEnd(batch);
         btnExit.renderWithoutBeginEnd(batch);
         font.draw(batch, "GAME OVER! " +

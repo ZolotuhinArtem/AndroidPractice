@@ -17,12 +17,10 @@ public class ButtonBuilder {
     private Button button;
     private float x, y, width, height;
     private Texture simple, pressed;
-    private String fontNameFromAssets;
-    private int fonSizePx;
+    private BitmapFont font;
     private Array<Button.ButtonEventListener> listeners;
     private String text;
     private State state;
-    private Color color;
     private boolean textureSimpleDisposeAfterDeathOrRemove,
             texturePressedDisposeAfterDeathOrRemove,
             fontDisposeAfterDeathOrRemove;
@@ -32,13 +30,11 @@ public class ButtonBuilder {
         this.y = 0;
         this.width = 256;
         this.height = 64;
-        this.fontNameFromAssets = "";
-        this.fonSizePx = 16;
         this.simple = null;
         this.pressed = null;
         this.listeners = new Array<>();
         this.text = "";
-        this.color = new Color(0, 0, 0, 1);
+        this.font = null;
         this.texturePressedDisposeAfterDeathOrRemove = false;
         this.textureSimpleDisposeAfterDeathOrRemove = false;
         this.fontDisposeAfterDeathOrRemove = false;
@@ -78,14 +74,9 @@ public class ButtonBuilder {
         return this;
     }
 
-    public ButtonBuilder fontFromAssets(String path, boolean disposeAfterDeathOrRemove) {
-        this.fontNameFromAssets = path;
+    public ButtonBuilder font(BitmapFont font, boolean disposeAfterDeathOrRemove) {
+        this.font = font;
         this.fontDisposeAfterDeathOrRemove = disposeAfterDeathOrRemove;
-        return this;
-    }
-
-    public ButtonBuilder fontSize(int px) {
-        this.fonSizePx = px;
         return this;
     }
 
@@ -99,11 +90,6 @@ public class ButtonBuilder {
         return this;
     }
 
-    public ButtonBuilder fontColor(Color color) {
-        this.color = color;
-        return this;
-    }
-
     public ButtonBuilder state(State state) {
         this.state = state;
         return this;
@@ -112,16 +98,8 @@ public class ButtonBuilder {
     public Button build() {
         button.setXY(x, y);
         button.setSize(this.width, this.height);
-        BitmapFont font;
-        if (this.fontNameFromAssets.length() == 0) {
+        if (font == null) {
             font = new BitmapFont();
-        } else {
-            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(this.fontNameFromAssets));
-            FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-            parameter.size = this.fonSizePx;
-            parameter.color = this.color;
-            font = generator.generateFont(parameter);
-            generator.dispose();
         }
         button.setFont(font, this.fontDisposeAfterDeathOrRemove);
         button.setTexturePressed(this.pressed, this.texturePressedDisposeAfterDeathOrRemove);

@@ -25,9 +25,7 @@ public class PauseState extends State implements Button.ButtonEventListener {
                 .state(this)
                 .width(gsm.getScreenWidth() * BUTTON_WIDTH)
                 .height(gsm.getScreenWidth() * BUTTON_HEIGHT)
-                .fontColor(Color.BLACK)
-                .fontFromAssets("pixel-font.otf", true)
-                .fontSize(Math.round(BUTTON_FONT_SIZE * gsm.getScreenWidth()))
+                .font(gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK), true)
                 .text("Resume")
                 .addEventListener(this)
                 .build();

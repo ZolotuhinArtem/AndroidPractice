@@ -15,7 +15,7 @@ import java.util.Stack;
  * Created by Artem Zolotukhin on 7/9/17.
  */
 
-public class GameManager implements Disposable {
+public class GameManager implements Disposable, FontProvider {
 
     private Stack<State> states;
 
@@ -28,6 +28,7 @@ public class GameManager implements Disposable {
     public GameManager(AbstractGame abstractGame) {
         states = new Stack<State>();
         this.abstractGame = abstractGame;
+        parcels = new HashMap<>();
         lastWidth = abstractGame.getScreenWidth();
         lastHeight = abstractGame.getScreenHeight();
     }
@@ -48,13 +49,12 @@ public class GameManager implements Disposable {
         state.resize(lastWidth, lastHeight);
     }
 
-    public void update(float delta){
+    public void update(float delta) {
         states.peek().handleInput();
         states.peek().update(delta);
-
     }
 
-    public void resize(int width, int height){
+    public void resize(int width, int height) {
         this.lastWidth = width;
         this.lastHeight = height;
         states.peek().resize(lastWidth, lastHeight);
@@ -64,11 +64,11 @@ public class GameManager implements Disposable {
         states.peek().render(batch);
     }
 
-    public int getScreenWidth(){
+    public int getScreenWidth() {
         return abstractGame.getScreenWidth();
     }
 
-    public int getScreenHeight(){
+    public int getScreenHeight() {
         return abstractGame.getScreenHeight();
     }
 
@@ -84,11 +84,11 @@ public class GameManager implements Disposable {
         parcels.remove(key);
     }
 
-    public void pause(){
+    public void pause() {
         states.peek().pause();
     }
 
-    public void resume(){
+    public void resume() {
         states.peek().resume();
     }
 
@@ -99,7 +99,8 @@ public class GameManager implements Disposable {
         }
     }
 
-    public BitmapFont getStandartFont(int sizePx, Color color) {
+    @Override
+    public BitmapFont getDefaultFont(int sizePx, Color color) {
 
         BitmapFont bitmapFont;
 
@@ -112,8 +113,10 @@ public class GameManager implements Disposable {
         generator.dispose();
 
         return bitmapFont;
+    }
 
-
-
+    @Override
+    public BitmapFont getDefaultFont(float sizePx, Color color) {
+        return this.getDefaultFont(Math.round(sizePx), color);
     }
 }
