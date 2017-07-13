@@ -15,4 +15,6 @@ public interface PictureRepository {
     List<Picture> getByName(String name);
 
     List<Painter> getAllPainters();
+
+    Painter getBySystemName(String systemName);
 }

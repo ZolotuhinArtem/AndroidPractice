@@ -74,4 +74,15 @@ public class JsonPictureRepository implements PictureRepository {
         }
         return list;
     }
+
+    @Override
+    public Painter getBySystemName(String systemName) {
+        List<Painter> list = new ArrayList<>();
+        for (Painter i : getAllPainters()) {
+            if (i.getSystemName().equals(systemName)) {
+                return i;
+            }
+        }
+        return null;
+    }
 }

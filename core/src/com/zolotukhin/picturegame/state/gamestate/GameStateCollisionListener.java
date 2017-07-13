@@ -5,6 +5,7 @@ import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
+import com.zolotukhin.picturegame.state.PictureChooseState;
 import com.zolotukhin.picturegame.state.State;
 
 /**
@@ -39,7 +40,7 @@ public class GameStateCollisionListener implements GameObject.CollisionListener 
                     player.subLives(1);
                 } else {
                     if (cause instanceof Player) {
-                        
+                        state.getGameManager().pushState(new PictureChooseState(state.getGameManager()));
                     }
                 }
 

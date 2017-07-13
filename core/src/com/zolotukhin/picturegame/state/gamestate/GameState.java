@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 public class GameState extends State implements Button.ButtonEventListener {
 
+    public static final String PARAM_PAINTER = GameState.class.getName() + ":param_painter";
 
     private static final float MIN_SPACE_INTERVAL_SPAWN_ITEM = 0.2f;
 

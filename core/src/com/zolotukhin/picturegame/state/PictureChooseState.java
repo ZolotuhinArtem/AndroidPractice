@@ -9,6 +9,7 @@ import com.zolotukhin.picturegame.GameManager;
 
 public class PictureChooseState extends State {
 
+    public static final String PARAM_PAINTER = PictureChooseState.class.getName() + ":param_painter";
 
     public PictureChooseState(GameManager gsm) {
         super(gsm);
