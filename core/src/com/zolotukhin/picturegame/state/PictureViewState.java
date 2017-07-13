@@ -10,9 +10,11 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.zolotukhin.picturegame.GameManager;
@@ -61,7 +63,6 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         font = gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK);
 
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
         Table table = new Table();
         table.setFillParent(true);
         table.center().bottom();
@@ -96,20 +97,18 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         style.font = font;
 
         TextButton btnCancel = new TextButton("Cancel", style);
-        btnCancel.addListener(new EventListener() {
+        btnCancel.addListener(new ClickListener() {
             @Override
-            public boolean handle(Event event) {
+            public void clicked(InputEvent event, float x, float y) {
                 backToPreviousState();
-                return false;
             }
         });
 
         TextButton btnAccept = new TextButton("Accept", style);
-        btnAccept.addListener(new EventListener() {
+        btnAccept.addListener(new ClickListener() {
             @Override
-            public boolean handle(Event event) {
+            public void clicked(InputEvent event, float x, float y) {
                 startPictureViewInfoState();
-                return false;
             }
         });
 
@@ -126,7 +125,7 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         gameManager.putParcel(PictureViewInfoState.PARAM_PICTURE, picture);
         gameManager.putParcel(PictureViewInfoState.PARAM_RIGHT, isRight);
         gameManager.popState();
-        gameManager.setState(new PictureViewState(gameManager));
+        gameManager.setState(new PictureViewInfoState(gameManager));
     }
 
     private void backToPreviousState() {
@@ -154,6 +153,12 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     }
 
     // LIFECYCLE
+
+
+    @Override
+    public void onShow() {
+        Gdx.input.setInputProcessor(stage);
+    }
 
     @Override
     public void onUpdate(float delta) {

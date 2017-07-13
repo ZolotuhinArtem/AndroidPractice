@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -118,6 +120,7 @@ public class PictureChooseState extends State {
         float btnSize = ((1 - MARGIN_SUMMARY) / DEFAULT_PICTURE_COUNT) * getUnit();
 
         for (int i = 0; i < buttons.length; i++) {
+
             table.add(buttons[i])
                     .width(btnSize)
                     .height(btnSize)
@@ -127,11 +130,10 @@ public class PictureChooseState extends State {
             final Picture picture = pictures.get(i);
             final Painter painter = pictureRepository.getPainterByPicture(picture);
 
-            buttons[i].addListener(new EventListener() {
+            buttons[i].addListener(new ClickListener() {
                 @Override
-                public boolean handle(Event event) {
+                public void clicked(InputEvent event, float x, float y) {
                     handlePictureButton(picture, painter, ii == rightPictureIndex);
-                    return false;
                 }
             });
         }
