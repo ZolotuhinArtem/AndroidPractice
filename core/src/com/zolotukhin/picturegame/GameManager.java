@@ -34,34 +34,50 @@ public class GameManager implements Disposable, FontProvider {
     }
 
     public void pushState(State state) {
+        if (states.size() > 0) {
+            states.peek().onHide();
+        }
         states.push(state);
         state.onResize(lastWidth, lastHeight);
+        state.onShow();
     }
 
     public void popState() {
         states.pop().onDispose();
-        states.peek().onResize(lastWidth, lastHeight);
+        if (states.size() > 0) {
+            states.peek().onResize(lastWidth, lastHeight);
+            states.peek().onShow();
+        }
     }
 
     public void setState(State state) {
-        states.pop().onDispose();
+        if (states.size() > 0) {
+            states.pop().onDispose();
+        }
         states.push(state);
         state.onResize(lastWidth, lastHeight);
+        state.onShow();
     }
 
     public void update(float delta) {
-        states.peek().handleInput();
-        states.peek().onUpdate(delta);
+        if (states.size() > 0) {
+            states.peek().handleInput();
+            states.peek().onUpdate(delta);
+        }
     }
 
     public void resize(int width, int height) {
         this.lastWidth = width;
         this.lastHeight = height;
-        states.peek().onResize(lastWidth, lastHeight);
+        if (states.size() > 0) {
+            states.peek().onResize(lastWidth, lastHeight);
+        }
     }
 
     public void render(SpriteBatch batch) {
-        states.peek().onRender(batch);
+        if (states.size() > 0) {
+            states.peek().onRender(batch);
+        }
     }
 
     public int getScreenWidth() {
@@ -85,11 +101,15 @@ public class GameManager implements Disposable, FontProvider {
     }
 
     public void pause() {
-        states.peek().onPause();
+        if (states.size() > 0) {
+            states.peek().onPause();
+        }
     }
 
     public void resume() {
-        states.peek().onResume();
+        if (states.size() > 0) {
+            states.peek().onResume();
+        }
     }
 
     @Override

@@ -1,15 +1,22 @@
 package com.zolotukhin.picturegame.state;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.zolotukhin.picturegame.GameManager;
-import com.zolotukhin.picturegame.gameobject.Button;
+import com.zolotukhin.picturegame.model.Painter;
 import com.zolotukhin.picturegame.model.Picture;
 
 /**
@@ -20,30 +27,125 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     public static final float BUTTON_WIDTH = 0.5f;
     public static final float BUTTON_HEIGHT = 0.2f;
-
+    public static final float BUTTON_FONT_SIZE = 0.05f;
 
     public static final String PARAM_PICTURE = PictureViewState.class.getName() + ":param_picture";
+    public static final String PARAM_PAINTER = PictureViewState.class.getName() + ":param_painter";
+    public static final String PARAM_RIGHT = PictureViewState.class.getName() + ":param_right";
 
     private Picture picture;
 
     private Texture texture;
 
-    private Texture btnUp, btnDown;
+    private Texture btnUpTexture, btnDownTexture;
 
     private float pictureX, pictureY, pictureWidth, pictureHeight;
 
     private Stage stage;
 
-    public PictureViewState(GameManager gameManager) {
+    private BitmapFont font;
+
+    private Boolean isRight;
+
+    private Painter painter;
+
+    public PictureViewState(final GameManager gameManager) {
         super(gameManager);
 
         picture = loadPicture();
+        isRight = loadIsRight();
+        painter = loadPainter();
 
-        texture = new Texture(picture.getPath());
+        loadTextures();
+
+        font = gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK);
 
         stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        Table table = new Table();
+        table.setFillParent(true);
+        table.center().bottom();
+        stage.addActor(table);
 
+        configureButtons(table);
 
+        preparePictureTextureParameters();
+    }
+
+    private void preparePictureTextureParameters() {
+        pictureX = 0;
+        pictureY = 0;
+
+        if (texture.getWidth() > texture.getHeight()) {
+            pictureWidth = gameManager.getScreenWidth();
+            pictureHeight = ((float) texture.getHeight() / (float) texture.getWidth()) * pictureWidth;
+
+            pictureY = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit() - pictureHeight) / 2 + BUTTON_HEIGHT;
+        } else {
+            pictureHeight = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit());
+            pictureY = BUTTON_HEIGHT;
+            pictureWidth = ((float) texture.getWidth() / (float) texture.getHeight()) * pictureHeight;
+            pictureX = (gameManager.getScreenWidth() - pictureWidth) / 2;
+        }
+    }
+
+    private void configureButtons(Table table) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.up = new TextureRegionDrawable(new TextureRegion(btnUpTexture));
+        style.down = new TextureRegionDrawable(new TextureRegion(btnDownTexture));
+        style.font = font;
+
+        TextButton btnCancel = new TextButton("Cancel", style);
+        btnCancel.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                backToPreviousState();
+                return false;
+            }
+        });
+
+        TextButton btnAccept = new TextButton("Accept", style);
+        btnAccept.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                startPictureViewInfoState();
+                return false;
+            }
+        });
+
+        table.add(btnCancel)
+                .width(BUTTON_WIDTH * getUnit())
+                .height(BUTTON_HEIGHT * getUnit());
+        table.add(btnAccept)
+                .width(BUTTON_WIDTH * getUnit())
+                .height(BUTTON_HEIGHT * getUnit());
+    }
+
+    private void startPictureViewInfoState() {
+        gameManager.putParcel(PictureViewInfoState.PARAM_PAINTER, painter);
+        gameManager.putParcel(PictureViewInfoState.PARAM_PICTURE, picture);
+        gameManager.putParcel(PictureViewInfoState.PARAM_RIGHT, isRight);
+        gameManager.popState();
+        gameManager.setState(new PictureViewState(gameManager));
+    }
+
+    private void backToPreviousState() {
+        gameManager.popState();
+    }
+
+    private void loadTextures() {
+
+        texture = new Texture(picture.getPath());
+        btnUpTexture = new Texture("btn_simple.png");
+        btnDownTexture = new Texture("btn_pressed.png");
+    }
+
+    private Painter loadPainter() {
+        return (Painter) gameManager.getParcel(PARAM_PAINTER);
+    }
+
+    private Boolean loadIsRight() {
+        return (Boolean) gameManager.getParcel(PARAM_RIGHT);
     }
 
     private Picture loadPicture() {
@@ -55,26 +157,26 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     @Override
     public void onUpdate(float delta) {
-
+        stage.act(delta);
     }
 
     @Override
     public void onRender(SpriteBatch batch) {
-
+        stage.draw();
     }
 
     @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onResume() {
-
+    public void onResize(int width, int height) {
+        stage.getViewport().update(width, height);
     }
 
     @Override
     public void onDispose() {
+        font.dispose();
+        texture.dispose();
+        btnUpTexture.dispose();
+        btnDownTexture.dispose();
+        stage.dispose();
     }
 
     // GESTURE HANDLING
@@ -101,6 +203,8 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        pictureX += deltaX;
+        pictureY += deltaY;
         return false;
     }
 

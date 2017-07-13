@@ -17,4 +17,6 @@ public interface PictureRepository {
     Painter getPainterBySystemName(String systemName);
 
     Picture getPictureBySystemName(String systemName);
+
+    Painter getPainterByPicture(Picture picture);
 }

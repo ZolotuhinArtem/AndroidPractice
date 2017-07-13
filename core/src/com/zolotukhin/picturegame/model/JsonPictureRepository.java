@@ -78,4 +78,14 @@ public class JsonPictureRepository implements PictureRepository {
 
         return null;
     }
+
+    @Override
+    public Painter getPainterByPicture(Picture picture) {
+        for (Painter i : getAllPainters()) {
+            if (i.getPictures().contains(picture)) {
+                return i;
+            }
+        }
+        return null;
+    }
 }

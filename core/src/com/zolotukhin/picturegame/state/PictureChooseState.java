@@ -1,5 +1,6 @@
 package com.zolotukhin.picturegame.state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -43,7 +44,7 @@ public class PictureChooseState extends State {
 
     private PictureRepository pictureRepository;
 
-    private Painter painter;
+    private Painter rightPainter;
 
     private Texture[] texturePictures;
 
@@ -64,12 +65,12 @@ public class PictureChooseState extends State {
     public PictureChooseState(GameManager gsm) {
         super(gsm);
         pictureRepository = new JsonPictureRepository();
-        painter = loadPainter();
+        rightPainter = loadPainter();
 
-        rightPicture = painter.getPictures().get(MathUtils.random(0, painter.getPictures().size() - 1));
+        rightPicture = rightPainter.getPictures().get(MathUtils.random(0, rightPainter.getPictures().size() - 1));
 
         List<Painter> otherPainters = pictureRepository.getAllPainters();
-        otherPainters.remove(painter);
+        otherPainters.remove(rightPainter);
 
         List<Picture> otherPictures = new ArrayList<>();
         for (Painter i : otherPainters) {
@@ -77,7 +78,7 @@ public class PictureChooseState extends State {
         }
         Collections.shuffle(otherPictures, new Random(System.currentTimeMillis()));
 
-        List<Picture> pictures = new ArrayList<>(DEFAULT_PICTURE_COUNT);
+        final List<Picture> pictures = new ArrayList<>(DEFAULT_PICTURE_COUNT);
         pictures.add(rightPicture);
         for (Picture i : otherPictures) {
             if (pictures.size() < DEFAULT_PICTURE_COUNT) {
@@ -96,13 +97,14 @@ public class PictureChooseState extends State {
         generateButtons();
 
         stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
         bitmapFont = gameManager.getDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
         Label.LabelStyle style = new Label.LabelStyle(bitmapFont, Color.WHITE);
-        label = new Label("Chose picture of " + painter.getNames().get("en")
+        label = new Label("Chose picture of " + rightPainter.getNames().get("en")
                 + "\nIf you want see more, click on any picture", style);
         label.setWrap(true);
         label.setAlignment(Align.center);
@@ -114,20 +116,33 @@ public class PictureChooseState extends State {
         table.row();
         float pad = (MARGIN_SUMMARY / (DEFAULT_PICTURE_COUNT + 1)) * getUnit();
         float btnSize = ((1 - MARGIN_SUMMARY) / DEFAULT_PICTURE_COUNT) * getUnit();
-        for (int i = 0; i < buttons.length; i++) {
 
+        for (int i = 0; i < buttons.length; i++) {
             table.add(buttons[i])
                     .width(btnSize)
                     .height(btnSize)
                     .padLeft(i == 0 ? pad : 0)
                     .padRight(i == buttons.length - 1 ? pad : 0);
+            final int ii = i;
+            final Picture picture = pictures.get(i);
+            final Painter painter = pictureRepository.getPainterByPicture(picture);
+
             buttons[i].addListener(new EventListener() {
                 @Override
                 public boolean handle(Event event) {
+                    handlePictureButton(picture, painter, ii == rightPictureIndex);
                     return false;
                 }
             });
         }
+    }
+
+    private void handlePictureButton(Picture picture, Painter painter, Boolean isRight) {
+
+        gameManager.putParcel(PictureViewState.PARAM_PICTURE, picture);
+        gameManager.putParcel(PictureViewState.PARAM_PAINTER, painter);
+        gameManager.putParcel(PictureViewState.PARAM_RIGHT, isRight);
+        gameManager.pushState(new PictureViewState(gameManager));
     }
 
     private void generateButtons() {
@@ -192,8 +207,8 @@ public class PictureChooseState extends State {
     }
 
     @Override
-    public void onResume() {
-
+    public void onShow() {
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

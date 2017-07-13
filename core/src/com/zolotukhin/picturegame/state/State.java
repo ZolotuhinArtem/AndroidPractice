@@ -52,6 +52,11 @@ public abstract class State {
     public void onDispose() {
     }
 
+    public void onShow() {
+    }
+
+    public void onHide() {
+    }
 
     public void handleInput() {
         if (Gdx.input.isTouched()) {
