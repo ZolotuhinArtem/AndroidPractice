@@ -5,8 +5,6 @@ import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
-import com.zolotukhin.picturegame.state.PictureChooseState;
-import com.zolotukhin.picturegame.state.State;
 
 /**
  * Created by Artem Zolotukhin on 7/12/17.
@@ -16,11 +14,11 @@ public class GameStateCollisionListener implements GameObject.CollisionListener 
 
     private Player player;
 
-    private State state;
+    private SuperItemCatchListener superItemCatchListener;
 
-    public GameStateCollisionListener(Player player, State state) {
+    public GameStateCollisionListener(Player player, SuperItemCatchListener superItemCatchListener) {
         this.player = player;
-        this.state = state;
+        this.superItemCatchListener = superItemCatchListener;
     }
 
     @Override
@@ -33,23 +31,29 @@ public class GameStateCollisionListener implements GameObject.CollisionListener 
                     player.subLives(1);
                 }
             }
-
         } else {
             if (object instanceof SuperPictureFallingItem) {
                 if (cause instanceof Floor) {
                     player.subLives(1);
                 } else {
                     if (cause instanceof Player) {
-                        state.getGameManager().pushState(new PictureChooseState(state.getGameManager()));
+                        if (superItemCatchListener != null) {
+                            superItemCatchListener.onCatch((SuperPictureFallingItem) object);
+                        }
                     }
                 }
-
-
             }
         }
 
-
-
         object.destroy();
+    }
+
+    public SuperItemCatchListener getSuperItemCatchListener() {
+        return superItemCatchListener;
+    }
+
+    public GameStateCollisionListener setSuperItemCatchListener(SuperItemCatchListener superItemCatchListener) {
+        this.superItemCatchListener = superItemCatchListener;
+        return this;
     }
 }

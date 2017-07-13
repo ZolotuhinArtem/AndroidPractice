@@ -1,7 +1,10 @@
 package com.zolotukhin.picturegame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
 import com.zolotukhin.picturegame.state.State;
 
@@ -94,5 +97,23 @@ public class GameManager implements Disposable {
         while (states.size() > 0) {
             popState();
         }
+    }
+
+    public BitmapFont getStandartFont(int sizePx, Color color) {
+
+        BitmapFont bitmapFont;
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pixel-font.otf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = sizePx;
+        parameter.color = color;
+
+        bitmapFont = generator.generateFont(parameter);
+        generator.dispose();
+
+        return bitmapFont;
+
+
+
     }
 }

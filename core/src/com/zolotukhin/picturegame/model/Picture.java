@@ -1,6 +1,8 @@
 package com.zolotukhin.picturegame.model;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 
 /**
@@ -11,17 +13,18 @@ public class Picture {
 
     private HashMap<String, String> names;
 
-    private Painter painter;
-
     private String path;
+
+    @SerializedName("system_name")
+    private String systemName;
 
     public Picture() {
     }
 
-    public Picture(HashMap<String, String> names, Painter painter, String path) {
+    public Picture(HashMap<String, String> names, String path, String systemName) {
         this.names = names;
-        this.painter = painter;
         this.path = path;
+        this.systemName = systemName;
     }
 
     public HashMap<String, String> getNames() {
@@ -33,21 +36,21 @@ public class Picture {
         return this;
     }
 
-    public Painter getPainter() {
-        return painter;
-    }
-
-    public Picture setPainter(Painter painter) {
-        this.painter = painter;
-        return this;
-    }
-
     public String getPath() {
         return path;
     }
 
     public Picture setPath(String path) {
         this.path = path;
+        return this;
+    }
+
+    public String getSystemName() {
+        return systemName;
+    }
+
+    public Picture setSystemName(String systemName) {
+        this.systemName = systemName;
         return this;
     }
 }

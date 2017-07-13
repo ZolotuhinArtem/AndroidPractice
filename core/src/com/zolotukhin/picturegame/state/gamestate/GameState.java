@@ -13,6 +13,10 @@ import com.zolotukhin.picturegame.gameobject.Floor;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Hud;
 import com.zolotukhin.picturegame.gameobject.Player;
+import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
+import com.zolotukhin.picturegame.model.JsonPictureRepository;
+import com.zolotukhin.picturegame.model.Painter;
+import com.zolotukhin.picturegame.model.PictureRepository;
 import com.zolotukhin.picturegame.state.GameOverState;
 import com.zolotukhin.picturegame.state.PauseState;
 import com.zolotukhin.picturegame.state.State;
@@ -23,7 +27,7 @@ import java.util.Iterator;
  * Created by Artem Zolotukhin on 7/9/17.
  */
 
-public class GameState extends State implements Button.ButtonEventListener {
+public class GameState extends State implements Button.ButtonEventListener, SuperItemCatchListener {
 
     public static final String PARAM_PAINTER = GameState.class.getName() + ":param_painter";
 
@@ -57,11 +61,18 @@ public class GameState extends State implements Button.ButtonEventListener {
 
     private boolean isLeftPressed, isRightPressed;
 
+    private Painter currentPainter;
+
+    private PictureRepository pictureRepository;
+
     public GameState(GameManager gsm) {
         super(gsm);
 
         simpleObjects = new Array<>();
         float unit = gsm.getScreenWidth();
+
+        pictureRepository = new JsonPictureRepository();
+        currentPainter = loadPainter();
 
         camera.setToOrtho(false, gsm.getScreenWidth(), gsm.getScreenHeight());
 
@@ -120,6 +131,16 @@ public class GameState extends State implements Button.ButtonEventListener {
         fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
 
         simpleObjects.add(floor);
+    }
+
+    private Painter loadPainter() {
+
+        //String painterSystemName = (String) gameManager.getParcel(PARAM_PAINTER);
+        String painterSystemName = (String) gameManager.getParcel("zolotuhin");
+        Painter painter = pictureRepository.getPainterBySystemName(painterSystemName);
+
+
+        return painter;
     }
 
 
@@ -268,5 +289,10 @@ public class GameState extends State implements Button.ButtonEventListener {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onCatch(SuperPictureFallingItem item) {
+
     }
 }

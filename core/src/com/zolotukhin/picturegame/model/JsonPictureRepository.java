@@ -5,9 +5,7 @@ import com.google.gson.Gson;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Artem Zolotukhin on 7/11/17.
@@ -17,33 +15,34 @@ public class JsonPictureRepository implements PictureRepository {
 
     public static final String FILE_PATH = "data/data_picture.json";
 
-    private static DataPicture dataPicture;
+    private static DataPainters dataPainters;
 
     public JsonPictureRepository() {
 
-        if (dataPicture == null) {
+        if (dataPainters == null) {
             Gson gson = new Gson();
             Reader reader = Gdx.files.internal(FILE_PATH).reader();
-            dataPicture = gson.fromJson(reader, DataPicture.class);
+            dataPainters = gson.fromJson(reader, DataPainters.class);
         }
     }
 
     @Override
     public List<Picture> getAll() {
-        List<Picture> list = new ArrayList<>(dataPicture.getPictures().size());
-        for (Picture i : dataPicture.getPictures()) {
-            list.add(i);
+        List<Picture> list = new ArrayList<>();
+        for (Painter i : dataPainters.getPainters()) {
+            list.addAll(i.getPictures());
         }
         return list;
     }
 
     @Override
     public List<Picture> getByPainter(Painter painter) {
-        List<Picture> list = new ArrayList<>(dataPicture.getPictures().size());
+        List<Picture> list = new ArrayList<>(dataPainters.getPainters().size());
 
-        for (Picture i : dataPicture.getPictures()) {
-            if (i.getPainter().equals(painter)) {
-                list.add(i);
+        for (Painter i : dataPainters.getPainters()) {
+            if (i.equals(painter)) {
+                list.addAll(painter.getPictures());
+                break;
             }
         }
 
@@ -51,38 +50,32 @@ public class JsonPictureRepository implements PictureRepository {
     }
 
     @Override
-    public List<Picture> getByName(String name) {
-        List<Picture> list = new ArrayList<>(dataPicture.getPictures().size());
+    public List<Painter> getAllPainters() {
+        List<Painter> src = dataPainters.getPainters();
+        List<Painter> list = new ArrayList<>(src.size());
+        list.addAll(src);
+        return list;
+    }
 
-        for (Picture i : dataPicture.getPictures()) {
-            if (i.getNames().values().contains(name)) {
-                list.add(i);
+    @Override
+    public Painter getPainterBySystemName(String systemName) {
+        for (Painter i : getAllPainters()) {
+            if (i.getSystemName().equals(systemName)) {
+                return i;
             }
         }
         return null;
     }
 
     @Override
-    public List<Painter> getAllPainters() {
-        Set<Painter> painters = new HashSet<>();
-        for (Picture i : dataPicture.getPictures()) {
-            painters.add(i.getPainter());
-        }
-        List<Painter> list = new ArrayList<>(painters.size());
-        for (Painter i : painters) {
-            list.add(i);
-        }
-        return list;
-    }
+    public Picture getPictureBySystemName(String systemName) {
 
-    @Override
-    public Painter getBySystemName(String systemName) {
-        List<Painter> list = new ArrayList<>();
-        for (Painter i : getAllPainters()) {
+        for (Picture i : getAll()) {
             if (i.getSystemName().equals(systemName)) {
                 return i;
             }
         }
+
         return null;
     }
 }

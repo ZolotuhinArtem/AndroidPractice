@@ -1,18 +1,102 @@
 {
-  "pictures": [
+  "painters": [
     {
+      "system_name": "da_vinci",
       "names": {
-        "en": "picture",
-        "ru": "картина"
+        "en": "Leonardo da Vinci",
+        "ru": "Леонардо да Винчи"
       },
-      "painter": {
-        "system_name": "zolotuhin",
-        "names": {
-          "en": "Zolotukhin",
-          "ru": "Золотухин"
+      "pictures": [
+        {
+          "system_name": "annunciation",
+          "names": {
+            "en": "Annunciation",
+            "ru": "Благовещение"
+          },
+          "path": "data/da_vinci/annunciation.jpg"
+        },
+        {
+          "system_name": "benois_madonna",
+          "names": {
+            "en": "Benois Madonna",
+            "ru": "Мадонна Бенуа"
+          },
+          "path": "data/da_vinci/benois_madonna.jpg"
+        },
+        {
+          "system_name": "madonna_litta",
+          "names": {
+            "en": "Madonna Litta",
+            "ru": "Мадонна Литта"
+          },
+          "path": "data/da_vinci/madonna_litta.jpg"
+        },
+        {
+          "system_name": "madonna_of_the_carnation",
+          "names": {
+            "en": "Madonna of the Carnation",
+            "ru": "Мадонна с гвоздикой"
+          },
+          "path": "data/da_vinci/madonna_of_the_carnation.jpg"
+        },
+        {
+          "system_name": "mona_lisa",
+          "names": {
+            "en": "Mona Lisa",
+            "ru": "Мона Лиза"
+          },
+          "path": "data/da_vinci/mona_lisa.jpg"
+        },
+        {
+          "system_name": "the_last_supper",
+          "names": {
+            "en": "The Last Supper",
+            "ru": "Тайная вечеря"
+          },
+          "path": "data/da_vinci/the_last_supper.jpg"
         }
+      ]
+    },
+    {
+      "system_name": "renoir",
+      "names": {
+        "en": "Pierre-Auguste Renoir",
+        "ru": "Пьер Огюст Ренуар"
       },
-      "path": "data/badlogic.jpg"
+      "pictures": [
+        {
+          "system_name": "dance_at_bougival",
+          "names": {
+            "en": "Dance at Bougival",
+            "ru": "Танец в Буживале"
+          },
+          "path": "data/renoir/dance_at_bougival.jpg"
+        },
+        {
+          "system_name": "la_grenouillere",
+          "names": {
+            "en": "La Grenouillere",
+            "ru": "Лягушатник"
+          },
+          "path": "data/renoir/la_grenouillere.jpg"
+        },
+        {
+          "system_name": "le_moulin_de_la_galette",
+          "names": {
+            "en": "Dance at Le moulin de la Galette",
+            "ru": "Бал в Мулен де ла Галетт"
+          },
+          "path": "data/renoir/le_moulin_de_la_galette.jpg"
+        },
+        {
+          "system_name": "luncheon_of_the_boating_party",
+          "names": {
+            "en": "Luncheon of the Boating Party",
+            "ru": "Завтрак гребцов"
+          },
+          "path": "data/renoir/luncheon_of_the_boating_party.jpg"
+        }
+      ]
     }
   ]
 }
