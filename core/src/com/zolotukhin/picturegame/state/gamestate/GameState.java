@@ -17,9 +17,11 @@ import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Hud;
 import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
+import com.zolotukhin.picturegame.model.GalleryEntry;
 import com.zolotukhin.picturegame.model.JsonPictureRepository;
 import com.zolotukhin.picturegame.model.Painter;
 import com.zolotukhin.picturegame.model.PictureRepository;
+import com.zolotukhin.picturegame.model.SimpleGalleryRepository;
 import com.zolotukhin.picturegame.state.GameOverState;
 import com.zolotukhin.picturegame.state.PauseState;
 import com.zolotukhin.picturegame.state.PictureChooseState;
@@ -110,6 +112,12 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
 
         simpleObjects.add(floor);
+        //TEST
+        SimpleGalleryRepository rep = new SimpleGalleryRepository(pictureRepository);
+        for (GalleryEntry i : rep.get()) {
+            System.out.println(i.toString());
+        }
+        //
     }
 
     private Painter loadPainter() {
