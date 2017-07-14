@@ -114,6 +114,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         simpleObjects.add(floor);
         //TEST
         SimpleGalleryRepository rep = new SimpleGalleryRepository(pictureRepository);
+        rep.clear();
         for (GalleryEntry i : rep.get()) {
             System.out.println(i.toString());
         }

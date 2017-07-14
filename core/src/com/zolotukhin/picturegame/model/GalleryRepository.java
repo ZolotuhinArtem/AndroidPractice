@@ -11,4 +11,6 @@ public interface GalleryRepository {
     List<GalleryEntry> get();
 
     void add(GalleryEntry entry);
+
+    void clear();
 }

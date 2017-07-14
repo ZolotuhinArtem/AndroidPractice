@@ -24,12 +24,11 @@ public class SimpleGalleryRepository implements GalleryRepository {
 
         if (!Gdx.files.local(PATH).exists()) {
             for (Painter i : pictureRepository.getAllPainters()) {
-                for (Picture j: i.getPictures()) {
+                for (Picture j : i.getPictures()) {
                     Gdx.files.local(PATH).writeString(i.getSystemName() + ":" + j.getSystemName() + "\n", true);
                 }
             }
         }
-
     }
 
     @Override
@@ -48,7 +47,7 @@ public class SimpleGalleryRepository implements GalleryRepository {
         Picture picture;
 
         try {
-            while ( (string = reader.readLine()) != null ) {
+            while ((string = reader.readLine()) != null) {
                 if (string.length() == 0) {
                     continue;
                 }
@@ -57,7 +56,6 @@ public class SimpleGalleryRepository implements GalleryRepository {
                 picture = pictureRepository.getPictureBySystemName(values[1]);
                 entries.add(new GalleryEntry(painter, picture));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,6 +64,12 @@ public class SimpleGalleryRepository implements GalleryRepository {
 
     @Override
     public void add(GalleryEntry entry) {
-        //TODO
+        Gdx.files.local(PATH).writeString(entry.getPainter().getSystemName()
+                + ":" + entry.getPicture().getSystemName() + "\n", true);
+    }
+
+    @Override
+    public void clear() {
+        Gdx.files.local(PATH).writeString("", false);
     }
 }
