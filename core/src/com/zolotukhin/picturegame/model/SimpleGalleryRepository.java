@@ -21,14 +21,6 @@ public class SimpleGalleryRepository implements GalleryRepository {
 
     public SimpleGalleryRepository(PictureRepository repository) {
         this.pictureRepository = repository;
-
-        if (!Gdx.files.local(PATH).exists()) {
-            for (Painter i : pictureRepository.getAllPainters()) {
-                for (Picture j : i.getPictures()) {
-                    Gdx.files.local(PATH).writeString(i.getSystemName() + ":" + j.getSystemName() + "\n", true);
-                }
-            }
-        }
     }
 
     @Override

@@ -15,5 +15,6 @@ public class SuperPictureFallingItem extends FallingItem {
         getTexture().dispose();
         setTexture(new Texture("super_item.png"));
         setCost(DEFAULT_COST);
+        setSize(screenWidth * 0.105f, screenWidth * 0.105f);
     }
 }

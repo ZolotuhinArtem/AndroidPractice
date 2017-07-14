@@ -13,6 +13,7 @@ import com.zolotukhin.picturegame.factory.SimpleFallItemFactory;
 import com.zolotukhin.picturegame.gameobject.Button;
 import com.zolotukhin.picturegame.gameobject.FallingItem;
 import com.zolotukhin.picturegame.gameobject.Floor;
+import com.zolotukhin.picturegame.gameobject.GameBackground;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Hud;
 import com.zolotukhin.picturegame.gameobject.Player;
@@ -44,7 +45,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     private static final float STEP_FACTOR_SPACE_INTERVAL_SPAWN_ITEM = 0.99f;
 
-    public static final float BOTTOM_PANEL_HEIGHT = 0.15f;
+    public static final float FLOOR_HEIGHT = 0.025f;
     public static final float PAUSE_BUTTON_SIZE = 0.12f;
 
     public static final float FONT_SIZE = 0.05f;
@@ -73,6 +74,8 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     private Boolean isStarted;
 
+    private GameBackground gameBackground;
+
     public GameState(GameManager gsm) {
         super(gsm);
 
@@ -85,7 +88,9 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         pictureRepository = new JsonPictureRepository();
         currentPainter = loadPainter();
 
-        player = new Player(gsm.getScreenWidth() / 2, BOTTOM_PANEL_HEIGHT * getUnit() + 4, getUnit());
+        gameBackground = new GameBackground(0, 0, gsm.getScreenWidth(), gsm.getScreenHeight(), "game_background.png");
+
+        player = new Player(gsm.getScreenWidth() / 2, FLOOR_HEIGHT * getUnit() + 4, getUnit());
 
         spaceInterval = START_SPACE_INTERVAL_SPAWN_ITEM;
 
@@ -93,6 +98,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         float hudLiveSize = getUnit() * HUD_LIVE;
         hud = new Hud(HUD_MARGIN * getUnit(), gsm.getScreenHeight() - HUD_MARGIN * getUnit(), fontSize, hudLiveSize, gameManager);
         simpleObjects.add(hud);
+
 
         btnPause = new ButtonBuilder()
                 .textureSimple(new Texture("btn_pause_simple.png"), true)
@@ -107,14 +113,13 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         simpleObjects.add(btnPause);
 
 
-        floor = new Floor(0, 0, gsm.getScreenWidth(), BOTTOM_PANEL_HEIGHT * getUnit());
+        floor = new Floor(0, 0, gsm.getScreenWidth(), FLOOR_HEIGHT * getUnit());
         GameObject.CollisionListener collisionListener = new GameStateCollisionListener(player, this);
         fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
 
         simpleObjects.add(floor);
         //TEST
         SimpleGalleryRepository rep = new SimpleGalleryRepository(pictureRepository);
-        rep.clear();
         for (GalleryEntry i : rep.get()) {
             System.out.println(i.toString());
         }
@@ -184,6 +189,9 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
             } else {
                 player.move(Player.Direction.RIGHT, delta);
             }
+            player.setRun(true);
+        } else {
+            player.setRun(false);
         }
     }
 
@@ -241,6 +249,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        gameBackground.renderWithoutBeginEnd(batch);
 
         player.renderWithoutBeginEnd(batch);
 
@@ -276,7 +285,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         for (FallingItem i : fallingItems) {
             i.dispose();
         }
-
+        gameBackground.dispose();
         player.dispose();
         hud.dispose();
         font.dispose();

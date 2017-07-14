@@ -54,7 +54,7 @@ public class PictureViewInfoState extends State {
         loadParcel();
 
         isContainInGallery = checkGallery();
-        if (!isContainInGallery) {
+        if (!isContainInGallery && isRight) {
             galleryRepository.add(new GalleryEntry(painter, picture));
         }
 
@@ -97,7 +97,7 @@ public class PictureViewInfoState extends State {
 
         text += "Painter is\n" + painter.getNames().get("en") + "\n";
         text += "\nPicture is\n" + picture.getNames().get("en") + "\n";
-        if (!isContainInGallery) {
+        if (!isContainInGallery && isRight) {
             text += "\nIt is added in gallery!\n";
         }
         text += "\nTap to\ncontinue";
