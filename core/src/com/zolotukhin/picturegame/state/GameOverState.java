@@ -8,6 +8,8 @@ import com.badlogic.gdx.utils.Align;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.builder.ButtonBuilder;
 import com.zolotukhin.picturegame.gameobject.Button;
+import com.zolotukhin.picturegame.model.UserInfoRepository;
+import com.zolotukhin.picturegame.model.UserInfoRepositoryImpl;
 
 /**
  * Created by Artem Zolotukhin on 7/11/17.
@@ -25,15 +27,28 @@ public class GameOverState extends State implements Button.ButtonEventListener {
     public static final float EXIT_WIDTH = 0.15f;
 
     private int quantityPoints;
+    private long record;
     private Button btnRefresh;
     private Button btnExit;
 
     private BitmapFont font;
 
+    private UserInfoRepository userInfoRepository;
+
 
     public GameOverState(GameManager gsm) {
         super(gsm);
+        userInfoRepository = new UserInfoRepositoryImpl();
+
+
         quantityPoints = (int) gameManager.getParcel(POINTS_KEY);
+        record = userInfoRepository.getRecord();
+        if (quantityPoints > record) {
+            record = quantityPoints;
+            userInfoRepository.writeRecord(record);
+        }
+
+
         font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.WHITE);
 
         btnRefresh = new ButtonBuilder()
@@ -75,20 +90,11 @@ public class GameOverState extends State implements Button.ButtonEventListener {
         btnRefresh.renderWithoutBeginEnd(batch);
         btnExit.renderWithoutBeginEnd(batch);
         font.draw(batch, "GAME OVER! " +
-                        "\nPoints: " + quantityPoints, 0, gameManager.getScreenHeight() / 4 * 3,
+                        "\nYour points: " + quantityPoints + "\nRecord: " + record, 0, gameManager.getScreenHeight() / 4 * 3,
                 gameManager.getScreenWidth(), Align.center, false);
         batch.end();
     }
 
-    @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onResume() {
-
-    }
 
     @Override
     public void onDispose() {

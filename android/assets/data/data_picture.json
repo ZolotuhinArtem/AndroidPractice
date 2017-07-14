@@ -54,6 +54,13 @@
             "ru": "Тайная вечеря"
           },
           "path": "data/da_vinci/the_last_supper.jpg"
+        },
+        {
+          "system_name": "lady_with_an_ermine",
+          "names": {
+            "en": "Lady With An Ermine"
+          },
+          "path": "data/da_vinci/lady_with_an_ermine.jpg"
         }
       ]
     },
@@ -95,6 +102,198 @@
             "ru": "Завтрак гребцов"
           },
           "path": "data/renoir/luncheon_of_the_boating_party.jpg"
+        },
+        {
+          "system_name": "dance_in_the_city",
+          "names": {
+            "en": "Dance in the City"
+          },
+          "path": "data/renoir/dance_in_the_city.jpg"
+        },
+        {
+          "system_name": "girls_at_the_piano",
+          "names": {
+            "en": "Girls at the Piano"
+          },
+          "path": "data/renoir/girls_at_the_piano.jpg"
+        },
+        {
+          "system_name": "the_umbrellas",
+          "names": {
+            "en": "The Umbrellas"
+          },
+          "path": "data/renoir/the_umbrellas.jpg"
+        }
+      ]
+    },
+    {
+      "system_name": "van_gogh",
+      "names": {
+        "en": "Vincent van Gogh"
+      },
+      "pictures": [
+        {
+          "system_name": "almond_blossom",
+          "names": {
+            "en": "Almond Blossom"
+          },
+          "path": "data/van_gogh/almond_blossom.jpg"
+        },
+        {
+          "system_name": "irises",
+          "names": {
+            "en": "Irises"
+          },
+          "path": "data/van_gogh/Irises.jpg"
+        },
+        {
+          "system_name": "starry_night",
+          "names": {
+            "en": "The Starry Night"
+          },
+          "path": "data/van_gogh/starry_night.jpg"
+        },
+        {
+          "system_name": "starry_night_over_the_rhone",
+          "names": {
+            "en": "Starry Night Over the Rhone"
+          },
+          "path": "data/van_gogh/starry_night_over_the_rhone.jpg"
+        },
+        {
+          "system_name": "the_church_in_auvers",
+          "names": {
+            "en": "The Church at Auvers"
+          },
+          "path": "data/van_gogh/the_church_in_auvers.jpg"
+        },
+        {
+          "system_name": "the_red_vineyard",
+          "names": {
+            "en": "The Red Vineyards"
+          },
+          "path": "data/van_gogh/the_red_vineyard.jpg"
+        },
+        {
+          "system_name": "сafe_terrace_at_night",
+          "names": {
+            "en": "Cafe Terrace at Night"
+          },
+          "path": "data/van_gogh/сafe_terrace_at_night.jpeg"
+        }
+      ]
+    },
+    {
+      "system_name": "raphael",
+      "names": {
+        "en": "Raphael"
+      },
+      "pictures": [
+        {
+          "system_name": "madonna_in_the_meadow",
+          "names": {
+            "en": "Madonna in the Meadow"
+          },
+          "path": "data/raphael/madonna_in_the_meadow.jpg"
+        },
+        {
+          "system_name": "madonna_with_beardless_st.joseph",
+          "names": {
+            "en": "Madonna with Beardless St. Joseph"
+          },
+          "path": "data/raphael/madonna_with_beardless_st.joseph.jpg"
+        },
+        {
+          "system_name": "madonna_with_the_fish",
+          "names": {
+            "en": "Madonna with the Fish"
+          },
+          "path": "data/raphael/madonna_with_the_fish.jpg"
+        },
+        {
+          "system_name": "tempi_madonna",
+          "names": {
+            "en": "Tempi Madonna"
+          },
+          "path": "data/raphael/tempi_madonna.jpg"
+        },
+        {
+          "system_name": "the_school_of_athens",
+          "names": {
+            "en": "The School of Athens"
+          },
+          "path": "data/raphael/the_school_of_athens.jpg"
+        },
+        {
+          "system_name": "three_graces",
+          "names": {
+            "en": "Three Graces"
+          },
+          "path": "data/raphael/three_graces.jpg"
+        },
+        {
+          "system_name": "young_woman_with_unicorn",
+          "names": {
+            "en": "Young Woman with Unicorn"
+          },
+          "path": "data/raphael/young_woman_with_unicorn.jpg"
+        }
+      ]
+    },
+    {
+      "system_name": "rene_magritte",
+      "names": {
+        "en": "Rene Magritte"
+      },
+      "pictures": [
+        {
+          "system_name": "golconde",
+          "names": {
+            "en": "Golconde"
+          },
+          "path": "data/rene_magritte/golconde.jpg"
+        },
+        {
+          "system_name": "lovers",
+          "names": {
+            "en": "Lovers"
+          },
+          "path": "data/rene_magritte/lovers.jpg"
+        },
+        {
+          "system_name": "the_blank_check",
+          "names": {
+            "en": "The Blank Check"
+          },
+          "path": "data/rene_magritte/the_blank_check.jpg"
+        },
+        {
+          "system_name": "the_false_mirror",
+          "names": {
+            "en": "The False Mirror"
+          },
+          "path": "data/rene_magritte/the_false_mirror.jpg"
+        },
+        {
+          "system_name": "the_human_condition",
+          "names": {
+            "en": "The Human Condition"
+          },
+          "path": "data/rene_magritte/the_human_condition.jpg"
+        },
+        {
+          "system_name": "the_son_of_man",
+          "names": {
+            "en": "The Son of Man"
+          },
+          "path": "data/rene_magritte/the_son_of_man.jpg"
+        },
+        {
+          "system_name": "the_treachery_ofImages",
+          "names": {
+            "en": "The Treachery of Images"
+          },
+          "path": "data/rene_magritte/the_treachery_ofImages.jpg"
         }
       ]
     }

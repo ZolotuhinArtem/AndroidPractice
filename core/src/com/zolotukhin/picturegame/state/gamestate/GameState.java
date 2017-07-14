@@ -49,6 +49,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     public static final float HUD_MARGIN = 0.033f;
     public static final float HUD_LIVE = 0.07f;
+    public static final float HUD_FONT_SIZE = 0.05f;
 
     private Player player;
 
@@ -77,29 +78,25 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         font = gameManager.getDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
 
         simpleObjects = new Array<>();
-        float unit = gsm.getScreenWidth();
+        fallingItems = new Array<>();
 
         pictureRepository = new JsonPictureRepository();
         currentPainter = loadPainter();
 
-        camera.setToOrtho(false, gsm.getScreenWidth(), gsm.getScreenHeight());
-
-        player = new Player(gsm.getScreenWidth() / 2, BOTTOM_PANEL_HEIGHT * unit + 4, unit);
-
-        fallingItems = new Array<>();
+        player = new Player(gsm.getScreenWidth() / 2, BOTTOM_PANEL_HEIGHT * getUnit() + 4, getUnit());
 
         spaceInterval = START_SPACE_INTERVAL_SPAWN_ITEM;
 
-        int fontSize = Math.round(unit * 0.05f);
-        float hudLiveSize = unit * HUD_LIVE;
-        hud = new Hud(HUD_MARGIN * unit, gsm.getScreenHeight() - HUD_MARGIN * unit, fontSize, hudLiveSize, gameManager);
+        int fontSize = Math.round(getUnit() * HUD_FONT_SIZE);
+        float hudLiveSize = getUnit() * HUD_LIVE;
+        hud = new Hud(HUD_MARGIN * getUnit(), gsm.getScreenHeight() - HUD_MARGIN * getUnit(), fontSize, hudLiveSize, gameManager);
         simpleObjects.add(hud);
 
         btnPause = new ButtonBuilder()
                 .textureSimple(new Texture("btn_pause_simple.png"), true)
                 .texturePressed(new Texture("btn_pause_pressed.png"), true)
-                .height(PAUSE_BUTTON_SIZE * unit)
-                .width(PAUSE_BUTTON_SIZE * unit)
+                .height(PAUSE_BUTTON_SIZE * getUnit())
+                .width(PAUSE_BUTTON_SIZE * getUnit())
                 .state(this)
                 .addEventListener(this)
                 .build();
@@ -108,7 +105,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         simpleObjects.add(btnPause);
 
 
-        floor = new Floor(0, 0, gsm.getScreenWidth(), BOTTOM_PANEL_HEIGHT * unit);
+        floor = new Floor(0, 0, gsm.getScreenWidth(), BOTTOM_PANEL_HEIGHT * getUnit());
         GameObject.CollisionListener collisionListener = new GameStateCollisionListener(player, this);
         fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
 
@@ -131,7 +128,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
         checkPlayerMovementControl(delta);
 
-
         if (isStarted) {
             checkAndSpawnFallingItem();
             updateFallingItems(delta);
@@ -148,6 +144,19 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         hud.setPoints(player.getPoints());
         hud.setLives(player.getLives());
 
+        checkParcels();
+
+        checkPlayerLives();
+    }
+
+    private void checkPlayerLives() {
+        if (player.getLives() <= 0) {
+            gameManager.putParcel(GameOverState.POINTS_KEY, player.getPoints());
+            gameManager.setState(new GameOverState(gameManager));
+        }
+    }
+
+    private void checkParcels() {
         Boolean bool = (Boolean) gameManager.getParcel(PARAM_PICTURE_CHOOSE_RESULT);
         if (bool != null) {
             if (bool) {
@@ -156,11 +165,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
                 player.subLives(1);
             }
             gameManager.putParcel(PARAM_PICTURE_CHOOSE_RESULT, null);
-        }
-
-        if (player.getLives() <= 0) {
-            gameManager.putParcel(GameOverState.POINTS_KEY, player.getPoints());
-            gameManager.setState(new GameOverState(gameManager));
         }
     }
 

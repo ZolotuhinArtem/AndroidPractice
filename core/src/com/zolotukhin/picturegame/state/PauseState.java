@@ -53,16 +53,6 @@ public class PauseState extends State implements Button.ButtonEventListener {
     }
 
     @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onResume() {
-
-    }
-
-    @Override
     public void onDispose() {
         btnContinue.dispose();
     }
