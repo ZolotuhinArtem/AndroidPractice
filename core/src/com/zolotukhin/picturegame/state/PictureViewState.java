@@ -1,6 +1,7 @@
 package com.zolotukhin.picturegame.state;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -8,8 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -31,6 +30,9 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     public static final float BUTTON_HEIGHT = 0.2f;
     public static final float BUTTON_FONT_SIZE = 0.05f;
 
+    public static final float MAX_SCALE = 3;
+    public static final float MIN_SCALE = 0.7f;
+
     public static final String PARAM_PICTURE = PictureViewState.class.getName() + ":param_picture";
     public static final String PARAM_PAINTER = PictureViewState.class.getName() + ":param_painter";
     public static final String PARAM_RIGHT = PictureViewState.class.getName() + ":param_right";
@@ -41,7 +43,8 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     private Texture btnUpTexture, btnDownTexture;
 
-    private float pictureX, pictureY, pictureWidth, pictureHeight;
+    private float pictureX, pictureY, pictureWidth, pictureHeight,
+            pictureMinWidth, pictureMinHeight, pictureMaxHeight, pictureMaxWidth;
 
     private Stage stage;
 
@@ -50,6 +53,10 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     private Boolean isRight;
 
     private Painter painter;
+    private GestureDetector gestureDetector;
+
+    private InputMultiplexer inputMultiplexer;
+
 
     public PictureViewState(final GameManager gameManager) {
         super(gameManager);
@@ -68,9 +75,16 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         table.center().bottom();
         stage.addActor(table);
 
+        gestureDetector = new GestureDetector(this);
+
         configureButtons(table);
 
         preparePictureTextureParameters();
+
+
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(gestureDetector);
     }
 
     private void preparePictureTextureParameters() {
@@ -81,13 +95,24 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
             pictureWidth = gameManager.getScreenWidth();
             pictureHeight = ((float) texture.getHeight() / (float) texture.getWidth()) * pictureWidth;
 
-            pictureY = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit() - pictureHeight) / 2 + BUTTON_HEIGHT;
+            pictureY = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit() - pictureHeight) / 2f + BUTTON_HEIGHT * getUnit();
         } else {
             pictureHeight = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit());
             pictureY = BUTTON_HEIGHT;
             pictureWidth = ((float) texture.getWidth() / (float) texture.getHeight()) * pictureHeight;
             pictureX = (gameManager.getScreenWidth() - pictureWidth) / 2;
+            if (pictureWidth > gameManager.getScreenWidth()) {
+                pictureWidth = gameManager.getScreenWidth();
+                pictureHeight = ( (float) texture.getHeight() / (float) texture.getWidth()) * pictureWidth;
+                pictureX = 0;
+                pictureY = (gameManager.getScreenHeight() - pictureHeight - BUTTON_HEIGHT * getUnit()) / 2f + BUTTON_HEIGHT * getUnit();
+            }
+
         }
+        pictureMinWidth = pictureWidth * MIN_SCALE;
+        pictureMinHeight = (float) texture.getHeight() / (float) texture.getWidth() * pictureMinWidth;
+        pictureMaxWidth = pictureWidth * MAX_SCALE;
+        pictureMaxHeight = (float) texture.getHeight() / (float) texture.getWidth() * pictureMaxWidth;
     }
 
     private void configureButtons(Table table) {
@@ -118,6 +143,8 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         table.add(btnAccept)
                 .width(BUTTON_WIDTH * getUnit())
                 .height(BUTTON_HEIGHT * getUnit());
+
+
     }
 
     private void startPictureViewInfoState() {
@@ -157,7 +184,7 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     @Override
     public void onShow() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -167,6 +194,10 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     @Override
     public void onRender(SpriteBatch batch) {
+
+        batch.begin();
+        batch.draw(texture, pictureX, pictureY, pictureWidth, pictureHeight);
+        batch.end();
         stage.draw();
     }
 
@@ -209,7 +240,7 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         pictureX += deltaX;
-        pictureY += deltaY;
+        pictureY -= deltaY;
         return false;
     }
 
@@ -220,6 +251,36 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
+
+        float xx = ( (float) texture.getWidth() / (float)(texture.getHeight() + texture.getWidth())) * (distance - initialDistance);
+        float yy = ( (float) texture.getHeight() / (float) (texture.getHeight() + texture.getWidth())) * (distance - initialDistance);
+
+
+        pictureWidth += xx;
+        pictureHeight += yy;
+
+
+        pictureX -= xx / 2f;
+        pictureY -= yy / 2f;
+
+        if (pictureWidth < pictureMinWidth) {
+            pictureWidth = pictureMinWidth;
+            pictureHeight = pictureMinHeight;
+
+            pictureX += xx / 2f;
+            pictureY += yy / 2f;
+
+        } else {
+            if (pictureWidth > pictureMaxWidth) {
+
+                pictureWidth = pictureMaxWidth;
+                pictureHeight = pictureMaxHeight;
+
+                pictureX += xx / 2f;
+                pictureY += yy / 2f;
+            }
+        }
+
         return false;
     }
 

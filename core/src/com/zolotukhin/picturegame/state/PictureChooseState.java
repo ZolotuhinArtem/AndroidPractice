@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -63,6 +64,7 @@ public class PictureChooseState extends State {
     private int rightPictureIndex;
 
     private Picture rightPicture;
+
 
     public PictureChooseState(GameManager gsm) {
         super(gsm);
@@ -137,6 +139,8 @@ public class PictureChooseState extends State {
                 }
             });
         }
+
+
     }
 
     private void handlePictureButton(Picture picture, Painter painter, Boolean isRight) {
@@ -195,6 +199,7 @@ public class PictureChooseState extends State {
     @Override
     public void onUpdate(float delta) {
         stage.act(delta);
+
     }
 
     @Override
@@ -211,6 +216,7 @@ public class PictureChooseState extends State {
     @Override
     public void onShow() {
         Gdx.input.setInputProcessor(stage);
+
     }
 
     @Override

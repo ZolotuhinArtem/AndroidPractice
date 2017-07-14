@@ -1,7 +1,10 @@
 package com.zolotukhin.picturegame.state.gamestate;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.builder.ButtonBuilder;
@@ -41,9 +44,8 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     public static final float BOTTOM_PANEL_HEIGHT = 0.15f;
     public static final float PAUSE_BUTTON_SIZE = 0.12f;
-    public static final float ARROW_BUTTON_WIDTH = 0.44f;
-    public static final float ARROW_BUTTON_HEIGHT = 0.12f;
 
+    public static final float FONT_SIZE = 0.05f;
 
     public static final float HUD_MARGIN = 0.033f;
     public static final float HUD_LIVE = 0.07f;
@@ -58,17 +60,21 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     private FallItemFactory fallItemFactory;
 
     private Hud hud;
-    private Button btnPause, btnArrowLeft, btnArrowRight;
+    private Button btnPause;
     private Floor floor;
 
-    private boolean isLeftPressed, isRightPressed;
-
     private Painter currentPainter;
-
     private PictureRepository pictureRepository;
+
+    private BitmapFont font;
+
+    private Boolean isStarted;
 
     public GameState(GameManager gsm) {
         super(gsm);
+
+        isStarted = false;
+        font = gameManager.getDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
 
         simpleObjects = new Array<>();
         float unit = gsm.getScreenWidth();
@@ -89,9 +95,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         hud = new Hud(HUD_MARGIN * unit, gsm.getScreenHeight() - HUD_MARGIN * unit, fontSize, hudLiveSize, gameManager);
         simpleObjects.add(hud);
 
-        isLeftPressed = false;
-        isRightPressed = false;
-
         btnPause = new ButtonBuilder()
                 .textureSimple(new Texture("btn_pause_simple.png"), true)
                 .texturePressed(new Texture("btn_pause_pressed.png"), true)
@@ -100,32 +103,9 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
                 .state(this)
                 .addEventListener(this)
                 .build();
-        btnPause.setX((gsm.getScreenWidth() - btnPause.getWidth()) / 2);
-        btnPause.setY((BOTTOM_PANEL_HEIGHT - PAUSE_BUTTON_SIZE) / 2 * unit);
+        btnPause.setX(gsm.getScreenWidth() - btnPause.getWidth());
+        btnPause.setY(gsm.getScreenHeight() - btnPause.getHeight());
         simpleObjects.add(btnPause);
-
-        btnArrowLeft = new ButtonBuilder()
-                .textureSimple(new Texture("btn_left_simple.png"), true)
-                .texturePressed(new Texture("btn_left_pressed.png"), true)
-                .width(ARROW_BUTTON_WIDTH * unit)
-                .height(ARROW_BUTTON_HEIGHT * unit)
-                .x(0).y((BOTTOM_PANEL_HEIGHT - ARROW_BUTTON_HEIGHT) / 2 * unit)
-                .state(this)
-                .addEventListener(this)
-                .build();
-        simpleObjects.add(btnArrowLeft);
-
-        btnArrowRight = new ButtonBuilder()
-                .textureSimple(new Texture("btn_right_simple.png"), true)
-                .texturePressed(new Texture("btn_right_pressed.png"), true)
-                .width(ARROW_BUTTON_WIDTH * unit)
-                .height(ARROW_BUTTON_HEIGHT * unit)
-                .x(gsm.getScreenWidth() - ARROW_BUTTON_WIDTH * unit)
-                .y((BOTTOM_PANEL_HEIGHT - ARROW_BUTTON_HEIGHT) / 2 * unit)
-                .state(this)
-                .addEventListener(this)
-                .build();
-        simpleObjects.add(btnArrowRight);
 
 
         floor = new Floor(0, 0, gsm.getScreenWidth(), BOTTOM_PANEL_HEIGHT * unit);
@@ -149,11 +129,18 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     @Override
     public void onUpdate(float delta) {
 
-
         checkPlayerMovementControl(delta);
 
-        checkAndSpawnFallingItem();
-        updateFallingItems(delta);
+
+        if (isStarted) {
+            checkAndSpawnFallingItem();
+            updateFallingItems(delta);
+        } else {
+            if (isTouched()) {
+                isStarted = true;
+            }
+        }
+
         updateSimpleObjects(delta);
 
         player.update(delta);
@@ -178,15 +165,13 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     }
 
     private void checkPlayerMovementControl(float delta) {
-        if (isLeftPressed) {
-            player.move(Player.Direction.LEFT, delta);
-        } else {
-            if (isRightPressed) {
+        if (isTouched()) {
+            if (getPointX() < gameManager.getScreenWidth() / 2) {
+                player.move(Player.Direction.LEFT, delta);
+            } else {
                 player.move(Player.Direction.RIGHT, delta);
             }
         }
-        isLeftPressed = false;
-        isRightPressed = false;
     }
 
     private void updateSimpleObjects(float delta) {
@@ -252,6 +237,11 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
         renderSimpleObjects(batch);
 
+        if (!isStarted) {
+            font.draw(batch, "Tap to\nStart", 0, gameManager.getScreenHeight() / 2,
+                    gameManager.getScreenWidth(), Align.center, true);
+        }
+
         batch.end();
     }
 
@@ -267,10 +257,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         gameManager.pushState(new PauseState(gameManager));
     }
 
-    @Override
-    public void onResume() {
-
-    }
 
     @Override
     public void onDispose() {
@@ -280,6 +266,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
         player.dispose();
         hud.dispose();
+        font.dispose();
     }
 
     @Override
@@ -289,16 +276,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
             case RELEASED:
                 if (button == btnPause) {
                     gameManager.pushState(new PauseState(gameManager));
-                }
-                break;
-            case HOLDING:
-                if (button == btnArrowLeft) {
-                    isLeftPressed = true;
-                    break;
-                }
-                if (button == btnArrowRight) {
-                    isRightPressed = true;
-                    break;
                 }
                 break;
         }
