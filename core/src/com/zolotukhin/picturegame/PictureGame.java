@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.zolotukhin.picturegame.state.MenuState;
-import com.zolotukhin.picturegame.state.gamestate.GameState;
 
 public class PictureGame extends ApplicationAdapter implements AbstractGame {
 	private int screenWidth;

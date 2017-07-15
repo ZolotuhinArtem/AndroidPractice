@@ -53,4 +53,19 @@ public class Picture {
         this.systemName = systemName;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Picture picture = (Picture) o;
+
+        return systemName != null ? systemName.equals(picture.systemName) : picture.systemName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return systemName != null ? systemName.hashCode() : 0;
+    }
 }

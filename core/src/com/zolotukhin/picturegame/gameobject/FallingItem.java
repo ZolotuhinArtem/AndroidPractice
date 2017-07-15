@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class FallingItem extends GameObject {
 
-    public static final float WIDTH_IN_PART_OF_WIDTH = 0.1f;
-    public static final float HEIGHT_IN_PART_OF_WIDTH = 0.1f;
+    public static final float WIDTH_IN_PART_OF_WIDTH = 0.07f;
+    public static final float HEIGHT_IN_PART_OF_WIDTH = 0.07f;
 
     public static final float FALLING_SPEED_PART_OF_WIDTH = 0.6f;
 
@@ -39,7 +39,7 @@ public class FallingItem extends GameObject {
         setWidth(width);
         setHeight(height);
         fallingSpeed = screenWidth * FALLING_SPEED_PART_OF_WIDTH;
-        texture = new Texture("coin.png");
+        texture = new Texture("item.png");
         cost = DEFAULT_COST;
 
     }

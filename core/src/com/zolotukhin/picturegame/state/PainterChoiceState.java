@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.model.JsonPictureRepository;
 import com.zolotukhin.picturegame.model.Painter;
@@ -27,7 +26,13 @@ import java.util.List;
  */
 
 public class PainterChoiceState extends State {
-    public static final float LABEL_FONT_SIZE = 0.1f;
+
+
+    public static final float BUTTON_DEFAULT_WIDTH = 0.9f;
+    public static final float BUTTON_DEFAULT_HEIGHT = 0.27f;
+    public static final float BUTTON_MARGIN = 0.05f;
+
+    public static final float LABEL_FONT_SIZE = 0.055f;
 
     private TextButton btnExit;
     private BitmapFont font;
@@ -35,49 +40,68 @@ public class PainterChoiceState extends State {
     private Stage stage;
     private List<Painter> allPainter;
 
+    private Texture btnTextureUp;
+    private Texture btnTextureDown;
+
     public PainterChoiceState(GameManager gsm) {
         super(gsm);
         allPainter = new JsonPictureRepository().getAllPainters();
+        btnTextureUp = new Texture("btn_simple.png");
+        btnTextureDown = new Texture("btn_pressed.png");
 
-        Gdx.input.setInputProcessor(stage);
-
-        font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.WHITE);
+        font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.BLACK);
         TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
-        btnStyle.up = new TextureRegionDrawable(new TextureRegion(new Texture("btn_simple.png")));
-        btnStyle.down = new TextureRegionDrawable(new TextureRegion(new Texture("btn_pressed.png")));
-        btnStyle.font = gsm.getDefaultFont(32, Color.BLACK);
+        btnStyle.up = new TextureRegionDrawable(new TextureRegion(btnTextureUp));
+        btnStyle.down = new TextureRegionDrawable(new TextureRegion(btnTextureDown));
+        btnStyle.font = font;
 
         menu = new Table();
-        menu.center();
+        menu.bottom();
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
+        boolean isFirst = true;
+
+        int i = 0;
         for (Painter painter : allPainter) {
-            Button btnPainter = new TextButton(painter.getSystemName(), btnStyle);
+            Button btnPainter = new TextButton(painter.getNames().get("en"), btnStyle);
             final Painter finalPainter = painter;
             btnPainter.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    gameManager.setState(new GameState(gameManager));
                     gameManager.putParcel(GameState.PARAM_PAINTER, finalPainter);
+                    gameManager.setState(new GameState(gameManager));
                 }
             });
-            menu.add(btnPainter).width(gsm.getScreenWidth() / 2).height(gsm.getScreenHeight() / 10);
+            menu.add(btnPainter)
+                    .width(BUTTON_DEFAULT_WIDTH * getUnit())
+                    .height(BUTTON_DEFAULT_HEIGHT * getUnit())
+                    .padTop(!isFirst ? BUTTON_MARGIN * getUnit() : 0);
             menu.row();
+            isFirst = false;
         }
-        btnExit = new TextButton("Exit", btnStyle);
+        btnExit = new TextButton("Back", btnStyle);
         btnExit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.exit(0);
+                gameManager.popState();
             }
         });
-        menu.add(btnExit).width(gsm.getScreenWidth() / 2).height(gsm.getScreenHeight() / 10);
+        menu.add(btnExit)
+                .width(BUTTON_DEFAULT_WIDTH * getUnit())
+                .height(BUTTON_DEFAULT_HEIGHT * getUnit())
+                .padTop(BUTTON_MARGIN * getUnit());
         menu.setFillParent(true);
+
         ScrollPane pane = new ScrollPane(menu);
         pane.setScrollingDisabled(true, false);
         pane.setFillParent(true);
+
         stage.addActor(pane);
+    }
+
+    @Override
+    public void onShow() {
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -88,8 +112,6 @@ public class PainterChoiceState extends State {
     @Override
     public void onRender(SpriteBatch batch) {
         batch.begin();
-        font.draw(batch, "GAME NAME! ", 0, gameManager.getScreenHeight() / 4 * 3,
-                gameManager.getScreenWidth(), Align.center, false);
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         batch.end();
@@ -97,9 +119,9 @@ public class PainterChoiceState extends State {
 
     @Override
     public void onDispose() {
+        btnTextureUp.dispose();
+        btnTextureDown.dispose();
         font.dispose();
         stage.dispose();
     }
-
-
 }

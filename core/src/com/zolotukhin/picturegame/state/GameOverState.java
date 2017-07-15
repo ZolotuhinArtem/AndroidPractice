@@ -17,13 +17,13 @@ import com.zolotukhin.picturegame.model.UserInfoRepositoryImpl;
 
 public class GameOverState extends State implements Button.ButtonEventListener {
 
-    public static final float LABEL_FONT_SIZE = 0.1f;
+    public static final float LABEL_FONT_SIZE = 0.07f;
     public static final float EXIT_FONT_SIZE = 0.05f;
     public static final String POINTS_KEY = "points key";
 
     public static final float REFRESH_HEIGHT = 0.15f;
     public static final float REFRESH_WIDTH = 0.15f;
-    public static final float EXIT_HEIGHT = 0.15f;
+    public static final float EXIT_HEIGHT = 0.5f;
     public static final float EXIT_WIDTH = 0.15f;
 
     private int quantityPoints;
@@ -89,7 +89,7 @@ public class GameOverState extends State implements Button.ButtonEventListener {
         batch.begin();
         btnRefresh.renderWithoutBeginEnd(batch);
         btnExit.renderWithoutBeginEnd(batch);
-        font.draw(batch, "GAME OVER! " +
+        font.draw(batch, "GAME OVER!" +
                         "\nYour points: " + quantityPoints + "\nRecord: " + record, 0, gameManager.getScreenHeight() / 4 * 3,
                 gameManager.getScreenWidth(), Align.center, false);
         batch.end();

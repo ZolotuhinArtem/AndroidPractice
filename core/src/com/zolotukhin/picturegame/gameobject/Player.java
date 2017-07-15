@@ -14,8 +14,8 @@ public class Player extends GameObject {
 
     public static float MOVEMENT_SPEED_PART_OF_WIDTH_PER_SECOND = 1f;
 
-    public static float SPRITE_WIDTH_PART_OF_WIDTH = 0.25f;
-    public static float SPRITE_HEIGHT_PART_OF_WIDTH = 0.25f;
+    public static float SPRITE_WIDTH_PART_OF_WIDTH = 0.1666f;
+    public static float SPRITE_HEIGHT_PART_OF_WIDTH = 0.2f;
 
     public static int START_LIVES = 3;
     public static int MAX_LIVES = 5;
@@ -28,16 +28,20 @@ public class Player extends GameObject {
 
     private int lives;
 
+    private boolean isRun;
+
     private Texture texture;
 
     private TextureRegion currentFrame;
     private float stateTime;
 
-    Animation<TextureRegion> animation;
+    private Animation<TextureRegion> animation;
 
     public void addPoints(int i) {
         points += i;
     }
+
+    public Direction direction;
 
 
     public enum Direction {
@@ -53,19 +57,21 @@ public class Player extends GameObject {
         float factSpriteHeight = screenWidth * SPRITE_HEIGHT_PART_OF_WIDTH;
         setWidth(factSpriteWidth);
         setHeight(factSpriteHeight);
-        texture = new Texture("avatar.png");
+        texture = new Texture("run.png");
         points = 0;
         lives = START_LIVES;
 
 
         AnimationBuilder animationBuilder = new AnimationBuilder();
-        animation = animationBuilder.from(texture, 0.1f, 2, 2);
+        animation = animationBuilder.from(texture, 1f / 30f, 5, 6);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         stateTime = 0;
+        direction = Direction.RIGHT;
     }
 
 
     public void move(Direction direction, float delta) {
+        this.direction = direction;
         switch (direction) {
             case LEFT:
                 addX(-delta * factSpeed);
@@ -86,9 +92,17 @@ public class Player extends GameObject {
         }
     }
 
+    public void setRun(boolean run) {
+        isRun = run;
+    }
+
     @Override
     public void update(float delta) {
-        stateTime += delta;
+        if (isRun) {
+            stateTime += delta;
+        } else {
+            stateTime = 0;
+        }
         currentFrame = animation.getKeyFrame(stateTime, true);
     }
 
@@ -96,7 +110,11 @@ public class Player extends GameObject {
     public void renderWithoutBeginEnd(SpriteBatch batch) {
 
         if (currentFrame != null) {
-            batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
+            if (direction == Direction.LEFT) {
+                batch.draw(currentFrame, getX() + getWidth(), getY(), -getWidth(), getHeight());
+            } else {
+                batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
+            }
         }
     }
 
