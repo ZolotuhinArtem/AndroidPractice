@@ -49,8 +49,6 @@ public class PainterChoiceState extends State {
         btnTextureUp = new Texture("btn_simple.png");
         btnTextureDown = new Texture("btn_pressed.png");
 
-        Gdx.input.setInputProcessor(stage);
-
         font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.BLACK);
         TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
         btnStyle.up = new TextureRegionDrawable(new TextureRegion(btnTextureUp));
@@ -59,10 +57,10 @@ public class PainterChoiceState extends State {
 
         menu = new Table();
         menu.center();
+        menu.bottom();
         stage = new Stage();
 
         boolean isFirst = true;
-
         for (Painter painter : allPainter) {
             Button btnPainter = new TextButton(painter.getNames().get("en"), btnStyle);
             final Painter finalPainter = painter;
