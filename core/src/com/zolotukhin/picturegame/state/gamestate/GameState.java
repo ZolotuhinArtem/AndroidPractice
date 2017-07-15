@@ -38,13 +38,13 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     public static final String PARAM_PAINTER = GameState.class.getName() + ":param_painter";
     public static final String PARAM_PICTURE_CHOOSE_RESULT = GameState.class.getName() + ":param_picture_choose_result";
 
-    private static final float MIN_SPACE_INTERVAL_SPAWN_ITEM = 0.2f;
+    private static final float MIN_SPACE_INTERVAL_SPAWN_ITEM = 0.25f;
 
     private static final float START_SPACE_INTERVAL_SPAWN_ITEM = 1.0f;
 
-    private static final float STEP_FACTOR_SPACE_INTERVAL_SPAWN_ITEM = 0.965f;
+    private static final float STEP_FACTOR_SPACE_INTERVAL_SPAWN_ITEM = 0.985f;
 
-    public static final float BOTTOM_PANEL_HEIGHT = 0.15f;
+    public static final float BOTTOM_PANEL_HEIGHT = 0.025f;
     public static final float PAUSE_BUTTON_SIZE = 0.12f;
 
     public static final float FONT_SIZE = 0.05f;
@@ -167,9 +167,13 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         if (isTouched()) {
             if (getPointX() < gameManager.getScreenWidth() / 2) {
                 player.move(Player.Direction.LEFT, delta);
+                player.setRun(true);
             } else {
                 player.move(Player.Direction.RIGHT, delta);
+                player.setRun(true);
             }
+        } else {
+            player.setRun(false);
         }
     }
 
