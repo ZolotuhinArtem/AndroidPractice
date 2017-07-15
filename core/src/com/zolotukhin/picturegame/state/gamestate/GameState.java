@@ -67,7 +67,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     private Floor floor;
 
     private Painter currentPainter;
-    private PictureRepository pictureRepository;
 
     private BitmapFont font;
 
@@ -82,7 +81,6 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         simpleObjects = new Array<>();
         fallingItems = new Array<>();
 
-        pictureRepository = new JsonPictureRepository();
         currentPainter = loadPainter();
 
         player = new Player(gsm.getScreenWidth() / 2, BOTTOM_PANEL_HEIGHT * getUnit() + 4, getUnit());
@@ -112,22 +110,11 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
 
         simpleObjects.add(floor);
-        //TEST
-        SimpleGalleryRepository rep = new SimpleGalleryRepository(pictureRepository);
-        for (GalleryEntry i : rep.get()) {
-            System.out.println(i.toString());
-        }
-        //
     }
 
     private Painter loadPainter() {
 
-        //String painterSystemName = (String) gameManager.getParcel(PARAM_PAINTER);
-        String painterSystemName = "da_vinci";
-        Painter painter = pictureRepository.getPainterBySystemName(painterSystemName);
-
-
-        return painter;
+        return (Painter) gameManager.getParcel(PARAM_PAINTER);
     }
 
 
