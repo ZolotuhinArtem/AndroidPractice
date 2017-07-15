@@ -23,7 +23,7 @@ public class GameOverState extends State implements Button.ButtonEventListener {
 
     public static final float REFRESH_HEIGHT = 0.15f;
     public static final float REFRESH_WIDTH = 0.15f;
-    public static final float EXIT_HEIGHT = 0.15f;
+    public static final float EXIT_HEIGHT = 0.5f;
     public static final float EXIT_WIDTH = 0.15f;
 
     private int quantityPoints;

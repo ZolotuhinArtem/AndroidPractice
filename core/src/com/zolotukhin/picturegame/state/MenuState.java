@@ -60,14 +60,14 @@ public class MenuState extends State {
         btnNewGame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameManager.setState(new PainterChoiceState(gameManager));
+                gameManager.pushState(new PainterChoiceState(gameManager));
             }
         });
         btnGallery = new TextButton("Gallery", btnStyle);
         btnGallery.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameManager.setState(new GalleryState(gameManager));
+                gameManager.pushState(new GalleryState(gameManager));
             }
         });
         btnExit = new TextButton("Exit", btnStyle);

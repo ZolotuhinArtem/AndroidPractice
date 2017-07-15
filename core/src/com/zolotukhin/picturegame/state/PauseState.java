@@ -14,8 +14,8 @@ import com.zolotukhin.picturegame.gameobject.Button;
 public class PauseState extends State implements Button.ButtonEventListener {
 
     public static final float BUTTON_FONT_SIZE = 0.05f;
-    public static final float BUTTON_WIDTH = 0.4f;
-    public static final float BUTTON_HEIGHT = 0.2f;
+    public static final float BUTTON_WIDTH = 0.5f;
+    public static final float BUTTON_HEIGHT = 0.15f;
 
     private Button btnContinue;
 
