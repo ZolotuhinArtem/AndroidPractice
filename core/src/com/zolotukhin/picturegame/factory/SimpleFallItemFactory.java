@@ -13,8 +13,8 @@ import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
 
 public class SimpleFallItemFactory implements FallItemFactory {
 
-    public static final int MIN_INTERVAL_SUPER_SPAWN = 1;
-    public static final int MAX_INTERVAL_SUPER_SPAWN = 3;
+    public static final int MIN_INTERVAL_SUPER_SPAWN = 7;
+    public static final int MAX_INTERVAL_SUPER_SPAWN = 15;
 
     private int screenWidth, screenHeight;
 

@@ -42,7 +42,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     private static final float START_SPACE_INTERVAL_SPAWN_ITEM = 1.0f;
 
-    private static final float STEP_FACTOR_SPACE_INTERVAL_SPAWN_ITEM = 0.99f;
+    private static final float STEP_FACTOR_SPACE_INTERVAL_SPAWN_ITEM = 0.965f;
 
     public static final float BOTTOM_PANEL_HEIGHT = 0.15f;
     public static final float PAUSE_BUTTON_SIZE = 0.12f;
