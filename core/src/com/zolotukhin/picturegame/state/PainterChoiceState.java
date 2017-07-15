@@ -60,7 +60,6 @@ public class PainterChoiceState extends State {
         menu = new Table();
         menu.center();
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
         boolean isFirst = true;
 
@@ -81,7 +80,7 @@ public class PainterChoiceState extends State {
             menu.row();
             isFirst = false;
         }
-        btnExit = new TextButton("Exit", btnStyle);
+        btnExit = new TextButton("Back", btnStyle);
         btnExit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -99,6 +98,11 @@ public class PainterChoiceState extends State {
         pane.setFillParent(true);
 
         stage.addActor(pane);
+    }
+
+    @Override
+    public void onShow() {
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

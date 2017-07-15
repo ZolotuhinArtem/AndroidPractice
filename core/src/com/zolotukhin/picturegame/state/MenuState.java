@@ -22,13 +22,15 @@ import com.zolotukhin.picturegame.GameManager;
 
 public class MenuState extends State {
 
-    public static final float BUTTON_DEFAULT_WIDTH = 0.5f;
-    public static final float BUTTON_DEFAULT_HEIGHT = 0.15f;
+    public static final float BUTTON_DEFAULT_WIDTH = 0.9f;
+    public static final float BUTTON_DEFAULT_HEIGHT = 0.27f;
+    public static final float BUTTON_FONT_SIZE = 0.07f;
     public static final float BUTTON_MARGIN = 0.05f;
     public static final float LABEL_FONT_SIZE = 0.08f;
 
     private TextButton btnNewGame, btnGallery, btnExit;
     private BitmapFont font;
+    private BitmapFont buttonFont;
     private Table menu;
     private Stage stage;
 
@@ -40,6 +42,8 @@ public class MenuState extends State {
         super(gsm);
 
         font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.WHITE);
+        buttonFont = gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK);
+
         btnTextureUp = new Texture("btn_simple.png");
         btnTextureDown = new Texture("btn_pressed.png");
 
@@ -54,7 +58,7 @@ public class MenuState extends State {
 
         btnStyle.up = new TextureRegionDrawable(new TextureRegion(btnTextureUp));
         btnStyle.down = new TextureRegionDrawable(new TextureRegion(btnTextureDown));
-        btnStyle.font = gsm.getDefaultFont(32, Color.BLACK);
+        btnStyle.font = buttonFont;
 
         btnNewGame = new TextButton("New game", btnStyle);
         btnNewGame.addListener(new ClickListener() {
@@ -81,7 +85,7 @@ public class MenuState extends State {
         menu = new Table();
         menu.center();
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
+
         menu.add(label)
                 .expandX();
         menu.row();
@@ -104,6 +108,11 @@ public class MenuState extends State {
     }
 
     @Override
+    public void onShow() {
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
     public void onUpdate(float delta) {
         stage.getViewport().update(gameManager.getScreenWidth(), gameManager.getScreenHeight(), true);
     }
@@ -120,6 +129,7 @@ public class MenuState extends State {
     public void onDispose() {
         btnTextureUp.dispose();
         btnTextureDown.dispose();
+        buttonFont.dispose();
         font.dispose();
         stage.dispose();
     }
