@@ -1,7 +1,10 @@
 package com.zolotukhin.picturegame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
 import com.zolotukhin.picturegame.state.State;
 
@@ -12,7 +15,7 @@ import java.util.Stack;
  * Created by Artem Zolotukhin on 7/9/17.
  */
 
-public class GameManager implements Disposable {
+public class GameManager implements Disposable, FontProvider {
 
     private Stack<State> states;
 
@@ -20,39 +23,68 @@ public class GameManager implements Disposable {
 
     private HashMap<String, Object> parcels;
 
+    private int lastWidth, lastHeight;
+
     public GameManager(AbstractGame abstractGame) {
         states = new Stack<State>();
         this.abstractGame = abstractGame;
+        parcels = new HashMap<>();
+        lastWidth = abstractGame.getScreenWidth();
+        lastHeight = abstractGame.getScreenHeight();
     }
 
     public void pushState(State state) {
+        if (states.size() > 0) {
+            states.peek().onHide();
+        }
         states.push(state);
+        state.onResize(lastWidth, lastHeight);
+        state.onShow();
     }
 
     public void popState() {
-        states.pop().dispose();
+        states.pop().onDispose();
+        if (states.size() > 0) {
+            states.peek().onResize(lastWidth, lastHeight);
+            states.peek().onShow();
+        }
     }
 
     public void setState(State state) {
-        states.pop().dispose();
+        if (states.size() > 0) {
+            states.pop().onDispose();
+        }
         states.push(state);
+        state.onResize(lastWidth, lastHeight);
+        state.onShow();
     }
 
-    public void update(float delta){
-        states.peek().handleInput();
-        states.peek().update(delta);
+    public void update(float delta) {
+        if (states.size() > 0) {
+            states.peek().handleInput();
+            states.peek().onUpdate(delta);
+        }
+    }
 
+    public void resize(int width, int height) {
+        this.lastWidth = width;
+        this.lastHeight = height;
+        if (states.size() > 0) {
+            states.peek().onResize(lastWidth, lastHeight);
+        }
     }
 
     public void render(SpriteBatch batch) {
-        states.peek().render(batch);
+        if (states.size() > 0) {
+            states.peek().onRender(batch);
+        }
     }
 
-    public int getScreenWidth(){
+    public int getScreenWidth() {
         return abstractGame.getScreenWidth();
     }
 
-    public int getScreenHeight(){
+    public int getScreenHeight() {
         return abstractGame.getScreenHeight();
     }
 
@@ -68,12 +100,16 @@ public class GameManager implements Disposable {
         parcels.remove(key);
     }
 
-    public void pause(){
-        states.peek().pause();
+    public void pause() {
+        if (states.size() > 0) {
+            states.peek().onPause();
+        }
     }
 
-    public void resume(){
-        states.peek().resume();
+    public void resume() {
+        if (states.size() > 0) {
+            states.peek().onResume();
+        }
     }
 
     @Override
@@ -81,5 +117,26 @@ public class GameManager implements Disposable {
         while (states.size() > 0) {
             popState();
         }
+    }
+
+    @Override
+    public BitmapFont getDefaultFont(int sizePx, Color color) {
+
+        BitmapFont bitmapFont;
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pixel-font.otf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = sizePx;
+        parameter.color = color;
+
+        bitmapFont = generator.generateFont(parameter);
+        generator.dispose();
+
+        return bitmapFont;
+    }
+
+    @Override
+    public BitmapFont getDefaultFont(float sizePx, Color color) {
+        return this.getDefaultFont(Math.round(sizePx), color);
     }
 }

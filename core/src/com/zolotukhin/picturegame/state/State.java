@@ -14,7 +14,7 @@ public abstract class State {
 
     protected OrthographicCamera camera;
     protected Vector3 vector;
-    protected GameManager gsm;
+    protected GameManager gameManager;
 
     private int unit;
 
@@ -22,15 +22,40 @@ public abstract class State {
 
     private boolean isTouched;
 
-    public State(GameManager gsm) {
-        this.gsm = gsm;
+    public State(GameManager gameManager) {
+        this.gameManager = gameManager;
         pointY = 0;
         pointX = 0;
         isTouched = false;
         vector = new Vector3(0, 0, 0);
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, gsm.getScreenWidth(), gsm.getScreenHeight());
-        unit = gsm.getScreenWidth();
+        camera.setToOrtho(false, gameManager.getScreenWidth(), gameManager.getScreenHeight());
+        unit = gameManager.getScreenWidth();
+    }
+
+
+    public void onResize(int width, int height) {
+    }
+
+    public void onUpdate(float delta) {
+    }
+
+    public void onRender(SpriteBatch batch) {
+    }
+
+    public void onPause() {
+    }
+
+    public void onResume() {
+    }
+
+    public void onDispose() {
+    }
+
+    public void onShow() {
+    }
+
+    public void onHide() {
     }
 
     public void handleInput() {
@@ -44,16 +69,6 @@ public abstract class State {
             isTouched = false;
         }
     }
-
-    public abstract void update(float delta);
-
-    public abstract void render(SpriteBatch batch);
-
-    public abstract void pause();
-
-    public abstract void resume();
-
-    public abstract void dispose();
 
     public float getPointX() {
         return pointX;
@@ -69,5 +84,14 @@ public abstract class State {
 
     public int getUnit() {
         return unit;
+    }
+
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public State setGameManager(GameManager gsm) {
+        this.gameManager = gsm;
+        return this;
     }
 }

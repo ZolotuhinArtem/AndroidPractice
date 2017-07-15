@@ -2,6 +2,7 @@ package com.zolotukhin.picturegame.gameobject;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Artem Zolotukhin on 7/10/17.
@@ -14,6 +15,8 @@ public class FallingItem extends GameObject {
 
     public static final float FALLING_SPEED_PART_OF_WIDTH = 0.6f;
 
+    public static final int DEFAULT_COST = 1;
+
     private float screenWidth;
 
     private float fallingSpeed;
@@ -24,12 +27,10 @@ public class FallingItem extends GameObject {
 
     private GameObject floor;
 
+    private int cost;
+
+
     public FallingItem(float x, float y, float screenWidth) {
-        this(x, y, screenWidth, null);
-
-    }
-
-    public FallingItem(float x, float y, float screenWidth, Player player ) {
         super(x, y);
 
         this.screenWidth = screenWidth;
@@ -39,31 +40,19 @@ public class FallingItem extends GameObject {
         setHeight(height);
         fallingSpeed = screenWidth * FALLING_SPEED_PART_OF_WIDTH;
         texture = new Texture("coin.png");
-        this.player = player;
+        cost = DEFAULT_COST;
+
     }
 
 
     @Override
     public void update(float delta) {
 
-        addY( -fallingSpeed * delta );
-        if (floor != null) {
-            if (getCollisionBody().overlaps(floor.getCollisionBody())) {
-                player.subLives(1);
-                destroy();
-                return;
-            }
-        }
-        if (player != null) {
-            if (getCollisionBody().overlaps(player.getCollisionBody())) {
-                player.addPoints(1);
-                destroy();
-                return;
-            }
-        }
+        super.update(delta);
+
+        addY(-fallingSpeed * delta);
 
     }
-
 
 
     @Override
@@ -94,4 +83,24 @@ public class FallingItem extends GameObject {
         this.floor = floor;
         return this;
     }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public FallingItem setCost(int cost) {
+        this.cost = cost;
+        return this;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public FallingItem setTexture(Texture texture) {
+        this.texture = texture;
+        return this;
+    }
+
+
 }

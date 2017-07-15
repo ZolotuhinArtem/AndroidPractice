@@ -3,10 +3,9 @@ package com.zolotukhin.picturegame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.zolotukhin.picturegame.state.GameState;
+import com.zolotukhin.picturegame.state.MenuState;
+import com.zolotukhin.picturegame.state.gamestate.GameState;
 
 public class PictureGame extends ApplicationAdapter implements AbstractGame {
 	private int screenWidth;
@@ -28,7 +27,7 @@ public class PictureGame extends ApplicationAdapter implements AbstractGame {
 		gsm = new GameManager(this);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 //		Gdx.gl.glClearColor(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
-		gsm.pushState(new GameState(gsm));
+		gsm.pushState(new MenuState(gsm));
 	}
 
 	@Override
@@ -38,7 +37,12 @@ public class PictureGame extends ApplicationAdapter implements AbstractGame {
 		gsm.render(batch);
 	}
 
-    @Override
+	@Override
+	public void resize(int width, int height) {
+		gsm.resize(width, height);
+	}
+
+	@Override
     public void pause() {
         gsm.pause();
     }

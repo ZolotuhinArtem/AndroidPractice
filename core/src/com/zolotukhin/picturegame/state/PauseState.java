@@ -25,9 +25,7 @@ public class PauseState extends State implements Button.ButtonEventListener {
                 .state(this)
                 .width(gsm.getScreenWidth() * BUTTON_WIDTH)
                 .height(gsm.getScreenWidth() * BUTTON_HEIGHT)
-                .fontColor(Color.BLACK)
-                .fontFromAssets("pixel-font.otf", true)
-                .fontSize(Math.round(BUTTON_FONT_SIZE * gsm.getScreenWidth()))
+                .font(gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK), true)
                 .text("Resume")
                 .addEventListener(this)
                 .build();
@@ -35,16 +33,18 @@ public class PauseState extends State implements Button.ButtonEventListener {
                 gsm.getScreenHeight() / 2 - btnContinue.getHeight() / 2);
         btnContinue.setTextureSimple(new Texture("btn_simple.png"), true);
         btnContinue.setTexturePressed(new Texture("btn_pressed.png"), true);
+
     }
 
     @Override
-    public void update(float delta) {
+    public void onUpdate(float delta) {
 
         btnContinue.update(delta);
+        
     }
 
     @Override
-    public void render(SpriteBatch batch) {
+    public void onRender(SpriteBatch batch) {
         camera.update();
 
         batch.begin();
@@ -53,24 +53,14 @@ public class PauseState extends State implements Button.ButtonEventListener {
     }
 
     @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
+    public void onDispose() {
         btnContinue.dispose();
     }
 
     @Override
     public void onEvent(Button button, Button.Event event) {
         if (event == Button.Event.RELEASED) {
-            gsm.popState();
+            gameManager.popState();
         }
     }
 }

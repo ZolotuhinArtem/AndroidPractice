@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * Created by Artem Zolotukhin on 7/11/17.
  */
 
-public class Floor extends GameObject{
+public class Floor extends GameObject {
 
 
     public Floor(float x, float y, float width, float height) {
