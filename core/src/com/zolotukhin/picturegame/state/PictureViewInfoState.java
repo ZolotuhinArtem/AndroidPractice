@@ -48,6 +48,8 @@ public class PictureViewInfoState extends State {
     public PictureViewInfoState(GameManager gameManager) {
         super(gameManager);
 
+        float fontSize = FONT_SIZE;
+
         pictureRepository = new JsonPictureRepository();
         galleryRepository = new SimpleGalleryRepository(pictureRepository);
 
@@ -58,7 +60,8 @@ public class PictureViewInfoState extends State {
             galleryRepository.add(new GalleryEntry(painter, picture));
         }
 
-        font = gameManager.getDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
+        font = gameManager.getResourceManager()
+                .getNewInstanceOfDefaultFont(fontSize * getUnit(), Color.WHITE);
 
         stage = new Stage(new ScreenViewport());
         Table table = new Table();

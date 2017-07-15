@@ -2,7 +2,6 @@ package com.zolotukhin.picturegame.gameobject;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Artem Zolotukhin on 7/10/17.
@@ -41,7 +40,6 @@ public class FallingItem extends GameObject {
         fallingSpeed = screenWidth * FALLING_SPEED_PART_OF_WIDTH;
         texture = new Texture("item.png");
         cost = DEFAULT_COST;
-
     }
 
 
@@ -51,7 +49,6 @@ public class FallingItem extends GameObject {
         super.update(delta);
 
         addY(-fallingSpeed * delta);
-
     }
 
 
@@ -101,6 +98,4 @@ public class FallingItem extends GameObject {
         this.texture = texture;
         return this;
     }
-
-
 }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
+import com.zolotukhin.picturegame.resource.ResourceManager;
+import com.zolotukhin.picturegame.resource.SimpleResourceManager;
 import com.zolotukhin.picturegame.state.State;
 
 import java.util.HashMap;
@@ -15,7 +17,7 @@ import java.util.Stack;
  * Created by Artem Zolotukhin on 7/9/17.
  */
 
-public class GameManager implements Disposable, FontProvider {
+public class GameManager implements Disposable, ResourceManagerProvider {
 
     private Stack<State> states;
 
@@ -25,12 +27,15 @@ public class GameManager implements Disposable, FontProvider {
 
     private int lastWidth, lastHeight;
 
+    private ResourceManager resourceManager;
+
     public GameManager(AbstractGame abstractGame) {
         states = new Stack<State>();
         this.abstractGame = abstractGame;
         parcels = new HashMap<>();
         lastWidth = abstractGame.getScreenWidth();
         lastHeight = abstractGame.getScreenHeight();
+        resourceManager = new SimpleResourceManager("btn_simple.png", "btn_pressed.png", "pixel-font.ttf");
     }
 
     public void pushState(State state) {
@@ -112,31 +117,21 @@ public class GameManager implements Disposable, FontProvider {
         }
     }
 
-    @Override
-    public void dispose() {
+    public void clearStates(){
         while (states.size() > 0) {
             popState();
         }
     }
 
     @Override
-    public BitmapFont getDefaultFont(int sizePx, Color color) {
-
-        BitmapFont bitmapFont;
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("pixel-font.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = sizePx;
-        parameter.color = color;
-
-        bitmapFont = generator.generateFont(parameter);
-        generator.dispose();
-
-        return bitmapFont;
+    public void dispose() {
+        clearStates();
+        resourceManager.dispose();
     }
 
+
     @Override
-    public BitmapFont getDefaultFont(float sizePx, Color color) {
-        return this.getDefaultFont(Math.round(sizePx), color);
+    public ResourceManager getResourceManager() {
+        return resourceManager;
     }
 }

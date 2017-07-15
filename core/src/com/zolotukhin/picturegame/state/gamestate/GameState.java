@@ -76,7 +76,7 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         super(gsm);
 
         isStarted = false;
-        font = gameManager.getDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
+        font = gameManager.getResourceManager().getNewInstanceOfDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
 
         simpleObjects = new Array<>();
         fallingItems = new Array<>();

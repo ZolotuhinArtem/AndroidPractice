@@ -106,7 +106,7 @@ public abstract class GameObject implements Disposable {
     }
 
     public void update(float delta) {
-        for(GameObject i : collisionObject) {
+        for (GameObject i : collisionObject) {
             if (getCollisionBody().overlaps(i.getCollisionBody())) {
                 for (CollisionListener j : collisionListeners) {
                     j.onCollision(this, i);
@@ -115,7 +115,10 @@ public abstract class GameObject implements Disposable {
         }
     }
 
-    public abstract void renderWithoutBeginEnd(SpriteBatch batch);
+    public void renderWithoutBeginEnd(SpriteBatch batch) {
+    }
+
+    ;
 
     public GameObject addCollisionListener(CollisionListener listener) {
         collisionListeners.add(listener);
@@ -127,7 +130,7 @@ public abstract class GameObject implements Disposable {
         return this;
     }
 
-    public GameObject clearCollisionListeners(){
+    public GameObject clearCollisionListeners() {
         collisionListeners.clear();
         return this;
     }
@@ -150,7 +153,7 @@ public abstract class GameObject implements Disposable {
     @Override
     public abstract void dispose();
 
-    public interface CollisionListener{
+    public interface CollisionListener {
         void onCollision(GameObject object, GameObject cause);
     }
 }

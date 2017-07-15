@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -38,9 +35,7 @@ import java.util.Random;
 public class PictureChooseState extends State {
 
     public static final int DEFAULT_PICTURE_COUNT = 3;
-
-    public static final float FONT_SIZE = 0.035f;
-
+    public static final float FONT_SIZE = 0.05f;
     public static final float MARGIN_SUMMARY = 0.1f;
 
     public static final String PARAM_PAINTER = PictureChooseState.class.getName() + ":param_painter";
@@ -68,6 +63,11 @@ public class PictureChooseState extends State {
 
     public PictureChooseState(GameManager gsm) {
         super(gsm);
+
+        int pictureCount = DEFAULT_PICTURE_COUNT;
+        float fontSize = FONT_SIZE;
+        float marginSummary = MARGIN_SUMMARY;
+
         pictureRepository = new JsonPictureRepository();
         rightPainter = loadPainter();
 
@@ -82,10 +82,10 @@ public class PictureChooseState extends State {
         }
         Collections.shuffle(otherPictures, new Random(System.currentTimeMillis()));
 
-        final List<Picture> pictures = new ArrayList<>(DEFAULT_PICTURE_COUNT);
+        final List<Picture> pictures = new ArrayList<>(pictureCount);
         pictures.add(rightPicture);
         for (Picture i : otherPictures) {
-            if (pictures.size() < DEFAULT_PICTURE_COUNT) {
+            if (pictures.size() < pictureCount) {
                 pictures.add(i);
             } else {
                 break;
@@ -106,20 +106,22 @@ public class PictureChooseState extends State {
         table.setFillParent(true);
         stage.addActor(table);
 
-        bitmapFont = gameManager.getDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
+        bitmapFont = gameManager.getResourceManager()
+                .getNewInstanceOfDefaultFont(fontSize * getUnit(), Color.WHITE);
+
         Label.LabelStyle style = new Label.LabelStyle(bitmapFont, Color.WHITE);
-        label = new Label("Chose picture of " + rightPainter.getNames().get("en")
-                + "\nIf you want see more, click on any picture", style);
+        label = new Label("Chose picture of\n" + rightPainter.getNames().get("en")
+                + "\nIf you want see more,\nclick on any picture", style);
         label.setWrap(true);
         label.setAlignment(Align.center);
         table.add(label)
-                .colspan(DEFAULT_PICTURE_COUNT)
+                .colspan(pictureCount)
                 .expandX()
                 .maxWidth(gsm.getScreenWidth())
-                .padBottom(MARGIN_SUMMARY * getUnit());
+                .padBottom(marginSummary * getUnit());
         table.row();
-        float pad = (MARGIN_SUMMARY / (DEFAULT_PICTURE_COUNT + 1)) * getUnit();
-        float btnSize = ((1 - MARGIN_SUMMARY) / DEFAULT_PICTURE_COUNT) * getUnit();
+        float pad = (marginSummary / (pictureCount + 1)) * getUnit();
+        float btnSize = ((1 - marginSummary) / pictureCount) * getUnit();
 
         for (int i = 0; i < buttons.length; i++) {
 
@@ -139,16 +141,14 @@ public class PictureChooseState extends State {
                 }
             });
         }
-
-
     }
 
     private void handlePictureButton(Picture picture, Painter painter, Boolean isRight) {
 
-        gameManager.putParcel(PictureViewState.PARAM_PICTURE, picture);
-        gameManager.putParcel(PictureViewState.PARAM_PAINTER, painter);
-        gameManager.putParcel(PictureViewState.PARAM_RIGHT, isRight);
-        gameManager.pushState(new PictureViewState(gameManager));
+        gameManager.putParcel(PictureInGameViewState.PARAM_PICTURE, picture);
+        gameManager.putParcel(PictureInGameViewState.PARAM_PAINTER, painter);
+        gameManager.putParcel(PictureInGameViewState.PARAM_RIGHT, isRight);
+        gameManager.pushState(new PictureInGameViewState(gameManager));
     }
 
     private void generateButtons() {
@@ -199,7 +199,6 @@ public class PictureChooseState extends State {
     @Override
     public void onUpdate(float delta) {
         stage.act(delta);
-
     }
 
     @Override
@@ -208,20 +207,15 @@ public class PictureChooseState extends State {
         stage.draw();
     }
 
-    @Override
-    public void onPause() {
-
-    }
 
     @Override
     public void onShow() {
         Gdx.input.setInputProcessor(stage);
-
     }
 
     @Override
     public void onDispose() {
-        for (int i = 0; i < DEFAULT_PICTURE_COUNT; i++) {
+        for (int i = 0; i < texturePictures.length; i++) {
             texturePictures[i].dispose();
         }
         bitmapFont.dispose();

@@ -1,66 +1,111 @@
 package com.zolotukhin.picturegame.state;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.zolotukhin.picturegame.GameManager;
-import com.zolotukhin.picturegame.builder.ButtonBuilder;
-import com.zolotukhin.picturegame.gameobject.Button;
+import com.zolotukhin.picturegame.resource.ButtonTexture;
 
 /**
  * Created by Artem Zolotukhin on 7/11/17.
  */
 
-public class PauseState extends State implements Button.ButtonEventListener {
+public class PauseState extends State {
 
-    public static final float BUTTON_FONT_SIZE = 0.05f;
-    public static final float BUTTON_WIDTH = 0.5f;
-    public static final float BUTTON_HEIGHT = 0.15f;
+    public static final float BUTTON_FONT_SIZE = 0.07f;
+    public static final float BUTTON_MARGIN = 0.05f;
+    public static final float BUTTON_WIDTH = 1f;
 
-    private Button btnContinue;
+
+    private Stage stage;
+
+    private BitmapFont font;
 
     public PauseState(GameManager gsm) {
         super(gsm);
-        btnContinue = new ButtonBuilder()
-                .state(this)
-                .width(gsm.getScreenWidth() * BUTTON_WIDTH)
-                .height(gsm.getScreenWidth() * BUTTON_HEIGHT)
-                .font(gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK), true)
-                .text("Resume")
-                .addEventListener(this)
-                .build();
-        btnContinue.setXY(gsm.getScreenWidth() / 2 - btnContinue.getWidth() / 2,
-                gsm.getScreenHeight() / 2 - btnContinue.getHeight() / 2);
-        btnContinue.setTextureSimple(new Texture("btn_simple.png"), true);
-        btnContinue.setTexturePressed(new Texture("btn_pressed.png"), true);
 
+        ButtonTexture buttonTexture = gameManager.getResourceManager().getDefaultButtonTexture();
+
+        float buttonWidth = BUTTON_WIDTH;
+        float buttonHeight = (float) buttonTexture.getUp().getRegionHeight() / (float) buttonTexture.getUp().getRegionWidth()
+                * buttonWidth;
+        float buttonFontSize = BUTTON_FONT_SIZE;
+        float buttonMargin = BUTTON_MARGIN;
+
+        font = gameManager.getResourceManager()
+                .getNewInstanceOfDefaultFont(buttonFontSize * getUnit(), Color.WHITE);
+
+        stage = new Stage(new ScreenViewport());
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = new TextureRegionDrawable(buttonTexture.getUp());
+        textButtonStyle.down = new TextureRegionDrawable(buttonTexture.getDown());
+        textButtonStyle.font = font;
+
+        TextButton buttonResume = new TextButton("Resume", textButtonStyle);
+        buttonResume.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameManager.popState();
+            }
+        });
+
+        TextButton buttonExit = new TextButton("Exit", textButtonStyle);
+        buttonExit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameManager.clearStates();
+                gameManager.setState(new MenuState(gameManager));
+            }
+        });
+
+        table.add(buttonResume)
+                .width(buttonWidth * getUnit())
+                .height(buttonHeight * getUnit())
+                .padBottom(buttonMargin * getUnit());
+        table.row();
+
+        table.add(buttonExit)
+                .width(buttonWidth * getUnit())
+                .height(buttonHeight * getUnit());
+    }
+
+    @Override
+    public void onResize(int width, int height) {
+        stage.getViewport().update(width, height);
     }
 
     @Override
     public void onUpdate(float delta) {
-
-        btnContinue.update(delta);
-        
+        stage.act(delta);
     }
 
     @Override
     public void onRender(SpriteBatch batch) {
-        camera.update();
-
         batch.begin();
-        btnContinue.renderWithoutBeginEnd(batch);
+        stage.draw();
         batch.end();
     }
 
     @Override
-    public void onDispose() {
-        btnContinue.dispose();
+    public void onShow() {
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
-    public void onEvent(Button button, Button.Event event) {
-        if (event == Button.Event.RELEASED) {
-            gameManager.popState();
-        }
+    public void onDispose() {
+        font.dispose();
+        stage.dispose();
     }
 }

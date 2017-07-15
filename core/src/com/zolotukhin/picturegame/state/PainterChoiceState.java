@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.model.JsonPictureRepository;
 import com.zolotukhin.picturegame.model.Painter;
+import com.zolotukhin.picturegame.resource.ButtonTexture;
 import com.zolotukhin.picturegame.state.gamestate.GameState;
 
 import java.util.List;
@@ -28,10 +29,8 @@ import java.util.List;
 public class PainterChoiceState extends State {
 
 
-    public static final float BUTTON_DEFAULT_WIDTH = 0.9f;
-    public static final float BUTTON_DEFAULT_HEIGHT = 0.27f;
+    public static final float BUTTON_WIDTH = 1f;
     public static final float BUTTON_MARGIN = 0.05f;
-
     public static final float LABEL_FONT_SIZE = 0.055f;
 
     private TextButton btnExit;
@@ -40,24 +39,30 @@ public class PainterChoiceState extends State {
     private Stage stage;
     private List<Painter> allPainter;
 
-    private Texture btnTextureUp;
-    private Texture btnTextureDown;
 
     public PainterChoiceState(GameManager gsm) {
         super(gsm);
-        allPainter = new JsonPictureRepository().getAllPainters();
-        btnTextureUp = new Texture("btn_simple.png");
-        btnTextureDown = new Texture("btn_pressed.png");
 
-        font = gameManager.getDefaultFont(LABEL_FONT_SIZE * getUnit(), Color.BLACK);
+        ButtonTexture buttonTexture = gameManager.getResourceManager().getDefaultButtonTexture();
+
+        float buttonWidth = BUTTON_WIDTH;
+        float buttonHeight = (float) buttonTexture.getUp().getRegionHeight() / (float) buttonTexture.getUp().getRegionWidth()
+                * buttonWidth;
+        float buttonMargin = BUTTON_MARGIN;
+        float labelFontSize = LABEL_FONT_SIZE;
+
+        allPainter = new JsonPictureRepository().getAllPainters();
+
+        font = gameManager.getResourceManager()
+                .getNewInstanceOfDefaultFont(labelFontSize * getUnit(), Color.WHITE);
+
         TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
-        btnStyle.up = new TextureRegionDrawable(new TextureRegion(btnTextureUp));
-        btnStyle.down = new TextureRegionDrawable(new TextureRegion(btnTextureDown));
+        btnStyle.up = new TextureRegionDrawable(buttonTexture.getUp());
+        btnStyle.down = new TextureRegionDrawable(buttonTexture.getDown());
         btnStyle.font = font;
 
         menu = new Table();
         menu.center();
-        menu.bottom();
         stage = new Stage();
 
         boolean isFirst = true;
@@ -72,9 +77,9 @@ public class PainterChoiceState extends State {
                 }
             });
             menu.add(btnPainter)
-                    .width(BUTTON_DEFAULT_WIDTH * getUnit())
-                    .height(BUTTON_DEFAULT_HEIGHT * getUnit())
-                    .padTop(!isFirst ? BUTTON_MARGIN * getUnit() : 0);
+                    .width(buttonWidth * getUnit())
+                    .height(buttonHeight * getUnit())
+                    .padTop(!isFirst ? buttonMargin * getUnit() : 0);
             menu.row();
             isFirst = false;
         }
@@ -86,10 +91,9 @@ public class PainterChoiceState extends State {
             }
         });
         menu.add(btnExit)
-                .width(BUTTON_DEFAULT_WIDTH * getUnit())
-                .height(BUTTON_DEFAULT_HEIGHT * getUnit())
-                .padTop(BUTTON_MARGIN * getUnit());
-        menu.setFillParent(true);
+                .width(buttonWidth * getUnit())
+                .height(buttonHeight * getUnit())
+                .padTop(buttonMargin * getUnit());
 
         ScrollPane pane = new ScrollPane(menu);
         pane.setScrollingDisabled(true, false);
@@ -104,22 +108,24 @@ public class PainterChoiceState extends State {
     }
 
     @Override
-    public void onUpdate(float delta) {
+    public void onResize(int width, int height) {
         stage.getViewport().update(gameManager.getScreenWidth(), gameManager.getScreenHeight(), true);
+    }
+
+    @Override
+    public void onUpdate(float delta) {
+        stage.act(delta);
     }
 
     @Override
     public void onRender(SpriteBatch batch) {
         batch.begin();
-        stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         batch.end();
     }
 
     @Override
     public void onDispose() {
-        btnTextureUp.dispose();
-        btnTextureDown.dispose();
         font.dispose();
         stage.dispose();
     }

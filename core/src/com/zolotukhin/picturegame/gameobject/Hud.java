@@ -1,13 +1,10 @@
 package com.zolotukhin.picturegame.gameobject;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.zolotukhin.picturegame.FontProvider;
-import com.zolotukhin.picturegame.state.State;
+import com.zolotukhin.picturegame.ResourceManagerProvider;
 
 /**
  * Created by Artem Zolotukhin on 7/10/17.
@@ -22,14 +19,15 @@ public class Hud extends GameObject {
     private float liveSize;
     private int fontSizePixels;
 
-    public Hud(float x, float y, int fontSizePixels, float liveSize, FontProvider fontProvider) {
+    public Hud(float x, float y, int fontSizePixels, float liveSize, ResourceManagerProvider fontProvider) {
         super(x, y);
         points = 0;
         lives = 0;
         this.liveSize = liveSize;
         this.fontSizePixels = fontSizePixels;
         liveImage = new Texture("live.png");
-        font = fontProvider.getDefaultFont(fontSizePixels, Color.WHITE);
+        font = fontProvider.getResourceManager()
+                .getNewInstanceOfDefaultFont(fontSizePixels, Color.WHITE);
     }
 
 

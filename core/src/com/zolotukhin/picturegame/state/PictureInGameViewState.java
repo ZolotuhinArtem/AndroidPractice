@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,29 +18,28 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.zolotukhin.picturegame.GameManager;
 import com.zolotukhin.picturegame.model.Painter;
 import com.zolotukhin.picturegame.model.Picture;
+import com.zolotukhin.picturegame.resource.ButtonTexture;
 
 /**
  * Created by Artem Zolotukhin on 7/13/17.
  */
 
-public class PictureViewState extends State implements GestureDetector.GestureListener {
+public class PictureInGameViewState extends State implements GestureDetector.GestureListener {
 
     public static final float BUTTON_WIDTH = 0.5f;
-    public static final float BUTTON_HEIGHT = 0.2f;
     public static final float BUTTON_FONT_SIZE = 0.05f;
+    public static final float BUTTON_MARGIN = 0.05f;
 
     public static final float MAX_SCALE = 3;
     public static final float MIN_SCALE = 0.7f;
 
-    public static final String PARAM_PICTURE = PictureViewState.class.getName() + ":param_picture";
-    public static final String PARAM_PAINTER = PictureViewState.class.getName() + ":param_painter";
-    public static final String PARAM_RIGHT = PictureViewState.class.getName() + ":param_right";
+    public static final String PARAM_PICTURE = PictureInGameViewState.class.getName() + ":param_picture";
+    public static final String PARAM_PAINTER = PictureInGameViewState.class.getName() + ":param_painter";
+    public static final String PARAM_RIGHT = PictureInGameViewState.class.getName() + ":param_right";
 
     private Picture picture;
 
     private Texture texture;
-
-    private Texture btnUpTexture, btnDownTexture;
 
     private float pictureX, pictureY, pictureWidth, pictureHeight,
             pictureMinWidth, pictureMinHeight, pictureMaxHeight, pictureMaxWidth;
@@ -58,16 +56,25 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     private InputMultiplexer inputMultiplexer;
 
 
-    public PictureViewState(final GameManager gameManager) {
+    public PictureInGameViewState(final GameManager gameManager) {
         super(gameManager);
 
         picture = loadPicture();
         isRight = loadIsRight();
         painter = loadPainter();
 
-        loadTextures();
+        ButtonTexture buttonTexture = gameManager.getResourceManager().getDefaultButtonTexture();
 
-        font = gameManager.getDefaultFont(BUTTON_FONT_SIZE * getUnit(), Color.BLACK);
+        float buttonWidth = BUTTON_WIDTH;
+        float buttonHeight = (float) buttonTexture.getUp().getRegionHeight() / (float) buttonTexture.getUp().getRegionWidth()
+                * buttonWidth;
+        float buttonFontSize = BUTTON_FONT_SIZE;
+        float buttonMargin = BUTTON_MARGIN;
+
+        texture = new Texture(picture.getPath());
+
+        font = gameManager.getResourceManager()
+                .getNewInstanceOfDefaultFont(buttonFontSize * getUnit(), Color.WHITE);
 
         stage = new Stage(new ScreenViewport());
         Table table = new Table();
@@ -77,9 +84,9 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
         gestureDetector = new GestureDetector(this);
 
-        configureButtons(table);
+        configureButtons(table, buttonWidth, buttonHeight, buttonMargin, buttonTexture);
 
-        preparePictureTextureParameters();
+        preparePictureTextureParameters(buttonHeight + buttonMargin * 2);
 
 
         inputMultiplexer = new InputMultiplexer();
@@ -87,7 +94,7 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         inputMultiplexer.addProcessor(gestureDetector);
     }
 
-    private void preparePictureTextureParameters() {
+    private void preparePictureTextureParameters(float bottomPanelHeight) {
         pictureX = 0;
         pictureY = 0;
 
@@ -95,19 +102,18 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
             pictureWidth = gameManager.getScreenWidth();
             pictureHeight = ((float) texture.getHeight() / (float) texture.getWidth()) * pictureWidth;
 
-            pictureY = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit() - pictureHeight) / 2f + BUTTON_HEIGHT * getUnit();
+            pictureY = (gameManager.getScreenHeight() - bottomPanelHeight * getUnit() - pictureHeight) / 2f + bottomPanelHeight * getUnit();
         } else {
-            pictureHeight = (gameManager.getScreenHeight() - BUTTON_HEIGHT * getUnit());
-            pictureY = BUTTON_HEIGHT;
+            pictureHeight = (gameManager.getScreenHeight() - bottomPanelHeight * getUnit());
+            pictureY = bottomPanelHeight;
             pictureWidth = ((float) texture.getWidth() / (float) texture.getHeight()) * pictureHeight;
             pictureX = (gameManager.getScreenWidth() - pictureWidth) / 2;
             if (pictureWidth > gameManager.getScreenWidth()) {
                 pictureWidth = gameManager.getScreenWidth();
-                pictureHeight = ( (float) texture.getHeight() / (float) texture.getWidth()) * pictureWidth;
+                pictureHeight = ((float) texture.getHeight() / (float) texture.getWidth()) * pictureWidth;
                 pictureX = 0;
-                pictureY = (gameManager.getScreenHeight() - pictureHeight - BUTTON_HEIGHT * getUnit()) / 2f + BUTTON_HEIGHT * getUnit();
+                pictureY = (gameManager.getScreenHeight() - pictureHeight - bottomPanelHeight * getUnit()) / 2f + bottomPanelHeight * getUnit();
             }
-
         }
         pictureMinWidth = pictureWidth * MIN_SCALE;
         pictureMinHeight = (float) texture.getHeight() / (float) texture.getWidth() * pictureMinWidth;
@@ -115,10 +121,11 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         pictureMaxHeight = (float) texture.getHeight() / (float) texture.getWidth() * pictureMaxWidth;
     }
 
-    private void configureButtons(Table table) {
+    private void configureButtons(Table table, float buttonWidth, float buttonHeight, float buttonMargin, ButtonTexture buttonTexture) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.up = new TextureRegionDrawable(new TextureRegion(btnUpTexture));
-        style.down = new TextureRegionDrawable(new TextureRegion(btnDownTexture));
+
+        style.up = new TextureRegionDrawable(buttonTexture.getUp());
+        style.down = new TextureRegionDrawable(buttonTexture.getDown());
         style.font = font;
 
         TextButton btnCancel = new TextButton("Cancel", style);
@@ -138,13 +145,15 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         });
 
         table.add(btnCancel)
-                .width(BUTTON_WIDTH * getUnit())
-                .height(BUTTON_HEIGHT * getUnit());
+                .width(buttonWidth * getUnit())
+                .height(buttonHeight * getUnit())
+                .padTop(buttonMargin * getUnit())
+                .padBottom(buttonMargin * getUnit());
         table.add(btnAccept)
-                .width(BUTTON_WIDTH * getUnit())
-                .height(BUTTON_HEIGHT * getUnit());
-
-
+                .width(buttonWidth * getUnit())
+                .height(buttonHeight * getUnit())
+                .padTop(buttonMargin * getUnit())
+                .padBottom(buttonMargin * getUnit());
     }
 
     private void startPictureViewInfoState() {
@@ -159,12 +168,6 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
         gameManager.popState();
     }
 
-    private void loadTextures() {
-
-        texture = new Texture(picture.getPath());
-        btnUpTexture = new Texture("btn_simple.png");
-        btnDownTexture = new Texture("btn_pressed.png");
-    }
 
     private Painter loadPainter() {
         return (Painter) gameManager.getParcel(PARAM_PAINTER);
@@ -210,8 +213,6 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     public void onDispose() {
         font.dispose();
         texture.dispose();
-        btnUpTexture.dispose();
-        btnDownTexture.dispose();
         stage.dispose();
     }
 
@@ -252,8 +253,8 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
     @Override
     public boolean zoom(float initialDistance, float distance) {
 
-        float xx = ( (float) texture.getWidth() / (float)(texture.getHeight() + texture.getWidth())) * (distance - initialDistance);
-        float yy = ( (float) texture.getHeight() / (float) (texture.getHeight() + texture.getWidth())) * (distance - initialDistance);
+        float xx = ((float) texture.getWidth() / (float) (texture.getHeight() + texture.getWidth())) * (distance - initialDistance);
+        float yy = ((float) texture.getHeight() / (float) (texture.getHeight() + texture.getWidth())) * (distance - initialDistance);
 
 
         pictureWidth += xx;
@@ -269,7 +270,6 @@ public class PictureViewState extends State implements GestureDetector.GestureLi
 
             pictureX += xx / 2f;
             pictureY += yy / 2f;
-
         } else {
             if (pictureWidth > pictureMaxWidth) {
 
