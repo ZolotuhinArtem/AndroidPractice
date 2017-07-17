@@ -93,6 +93,7 @@ public class PauseState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
+        super.onRender(batch);
         batch.begin();
         stage.draw();
         batch.end();

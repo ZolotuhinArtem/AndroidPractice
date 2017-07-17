@@ -100,7 +100,7 @@ public class GameOverState extends State {
         buttonExit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                newGame();
+                gameManager.popState();
             }
         });
 
@@ -108,7 +108,7 @@ public class GameOverState extends State {
         buttonRefresh.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameManager.popState();
+                newGame();
             }
         });
 
@@ -157,6 +157,7 @@ public class GameOverState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
+        super.onRender(batch);
         batch.begin();
         stage.draw();
         batch.end();

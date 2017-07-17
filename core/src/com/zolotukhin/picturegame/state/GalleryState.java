@@ -83,6 +83,7 @@ class GalleryState extends State {
         boolean isFirst = true;
 
         menu = new Table();
+        menu.center().bottom();
         stage = new Stage();
 
         if (allPicture.size() > 0) {
@@ -157,6 +158,7 @@ class GalleryState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
+        super.onRender(batch);
         batch.begin();
         font.draw(batch, "GAME NAME!", 0, gameManager.getScreenHeight() / 4 * 3,
                 gameManager.getScreenWidth(), Align.center, false);

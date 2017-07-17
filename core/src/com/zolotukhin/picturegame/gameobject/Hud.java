@@ -27,7 +27,7 @@ public class Hud extends GameObject {
         this.fontSizePixels = fontSizePixels;
         liveImage = new Texture("live.png");
         font = fontProvider.getResourceManager()
-                .getNewInstanceOfDefaultFont(fontSizePixels, Color.WHITE);
+                .getNewInstanceOfDefaultFont(fontSizePixels, Color.BLACK);
     }
 
 

@@ -135,6 +135,7 @@ public class PictureViewInfoState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
+        super.onRender(batch);
         stage.draw();
     }
 }

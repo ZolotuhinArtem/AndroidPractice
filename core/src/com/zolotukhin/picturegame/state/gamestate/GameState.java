@@ -13,15 +13,12 @@ import com.zolotukhin.picturegame.factory.SimpleFallItemFactory;
 import com.zolotukhin.picturegame.gameobject.Button;
 import com.zolotukhin.picturegame.gameobject.FallingItem;
 import com.zolotukhin.picturegame.gameobject.Floor;
+import com.zolotukhin.picturegame.gameobject.GameBackground;
 import com.zolotukhin.picturegame.gameobject.GameObject;
 import com.zolotukhin.picturegame.gameobject.Hud;
 import com.zolotukhin.picturegame.gameobject.Player;
 import com.zolotukhin.picturegame.gameobject.SuperPictureFallingItem;
-import com.zolotukhin.picturegame.model.GalleryEntry;
-import com.zolotukhin.picturegame.model.JsonPictureRepository;
 import com.zolotukhin.picturegame.model.Painter;
-import com.zolotukhin.picturegame.model.PictureRepository;
-import com.zolotukhin.picturegame.model.SimpleGalleryRepository;
 import com.zolotukhin.picturegame.state.GameOverState;
 import com.zolotukhin.picturegame.state.PauseState;
 import com.zolotukhin.picturegame.state.PictureChooseState;
@@ -38,9 +35,9 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
     public static final String PARAM_PAINTER = GameState.class.getName() + ":param_painter";
     public static final String PARAM_PICTURE_CHOOSE_RESULT = GameState.class.getName() + ":param_picture_choose_result";
 
-    private static final float MIN_SPACE_INTERVAL_SPAWN_ITEM = 0.25f;
+    private static final float MIN_SPACE_INTERVAL_SPAWN_ITEM = 0.27f;
 
-    private static final float START_SPACE_INTERVAL_SPAWN_ITEM = 1.0f;
+    private static final float START_SPACE_INTERVAL_SPAWN_ITEM = 1.3f;
 
     private static final float STEP_FACTOR_SPACE_INTERVAL_SPAWN_ITEM = 0.985f;
 
@@ -86,6 +83,8 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         player = new Player(gsm.getScreenWidth() / 2, BOTTOM_PANEL_HEIGHT * getUnit() + 4, getUnit());
 
         spaceInterval = START_SPACE_INTERVAL_SPAWN_ITEM;
+
+        simpleObjects.add(new GameBackground(0, 0, gsm.getScreenWidth(), gsm.getScreenHeight(), "game_background.jpg"));
 
         int fontSize = Math.round(getUnit() * HUD_FONT_SIZE);
         float hudLiveSize = getUnit() * HUD_LIVE;
@@ -227,18 +226,17 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     @Override
     public void onRender(SpriteBatch batch) {
-
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        super.onRender(batch);
         batch.begin();
 
-        player.renderWithoutBeginEnd(batch);
+
+        renderSimpleObjects(batch);
 
         for (FallingItem i : fallingItems) {
             i.renderWithoutBeginEnd(batch);
         }
 
-        renderSimpleObjects(batch);
+        player.renderWithoutBeginEnd(batch);
 
         if (!isStarted) {
             font.draw(batch, "Tap to\nStart", 0, gameManager.getScreenHeight() / 2,

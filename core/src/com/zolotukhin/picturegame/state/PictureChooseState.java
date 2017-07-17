@@ -203,7 +203,7 @@ public class PictureChooseState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
-        camera.update();
+        super.onRender(batch);
         stage.draw();
     }
 

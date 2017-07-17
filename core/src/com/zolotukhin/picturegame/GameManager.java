@@ -1,10 +1,6 @@
 package com.zolotukhin.picturegame;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
 import com.zolotukhin.picturegame.resource.ResourceManager;
 import com.zolotukhin.picturegame.resource.SimpleResourceManager;
@@ -35,7 +31,7 @@ public class GameManager implements Disposable, ResourceManagerProvider {
         parcels = new HashMap<>();
         lastWidth = abstractGame.getScreenWidth();
         lastHeight = abstractGame.getScreenHeight();
-        resourceManager = new SimpleResourceManager("btn_simple.png", "btn_pressed.png", "pixel-font.ttf");
+        resourceManager = new SimpleResourceManager("btn_simple.png", "btn_pressed.png", "pixel-font.otf");
     }
 
     public void pushState(State state) {

@@ -89,7 +89,8 @@ public class MenuState extends State {
         stage = new Stage();
 
         menu.add(label)
-                .expandX();
+                .expandX()
+                .padBottom(buttonMargin * getUnit());
         menu.row();
         menu.add(btnNewGame)
                 .width(buttonWidth * getUnit())
@@ -126,6 +127,7 @@ public class MenuState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
+        super.onRender(batch);
         batch.begin();
         stage.draw();
         batch.end();

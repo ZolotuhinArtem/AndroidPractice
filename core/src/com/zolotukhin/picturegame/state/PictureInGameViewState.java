@@ -197,7 +197,7 @@ public class PictureInGameViewState extends State implements GestureDetector.Ges
 
     @Override
     public void onRender(SpriteBatch batch) {
-
+        super.onRender(batch);
         batch.begin();
         batch.draw(texture, pictureX, pictureY, pictureWidth, pictureHeight);
         batch.end();

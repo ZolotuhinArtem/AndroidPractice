@@ -14,8 +14,11 @@ public class Player extends GameObject {
 
     public static float MOVEMENT_SPEED_PART_OF_WIDTH_PER_SECOND = 1f;
 
-    public static float SPRITE_WIDTH_PART_OF_WIDTH = 0.1666f;
-    public static float SPRITE_HEIGHT_PART_OF_WIDTH = 0.2f;
+    public static float SPRITE_WIDTH_PART_OF_WIDTH = 0.18611111f;
+    public static float SPRITE_HEIGHT_PART_OF_WIDTH = 0.25f;
+
+    public static float DEFAULT_WIDTH = 0.1f;
+    public static float DEFAULT_HEIGHT = 0.23f;
 
     public static int START_LIVES = 3;
     public static int MAX_LIVES = 5;
@@ -30,12 +33,16 @@ public class Player extends GameObject {
 
     private boolean isRun;
 
-    private Texture texture;
+    private Texture textureRun;
+
+    private Texture textureStand;
 
     private TextureRegion currentFrame;
     private float stateTime;
 
     private Animation<TextureRegion> animation;
+
+    private float spriteWidth, spriteHeight;
 
     public void addPoints(int i) {
         points += i;
@@ -52,18 +59,19 @@ public class Player extends GameObject {
     public Player(float x, float y, float screenWidth) {
         super(x, y);
         this.screenWidth = screenWidth;
+
         factSpeed = MOVEMENT_SPEED_PART_OF_WIDTH_PER_SECOND * screenWidth;
-        float factSpriteWidth = screenWidth * SPRITE_WIDTH_PART_OF_WIDTH;
-        float factSpriteHeight = screenWidth * SPRITE_HEIGHT_PART_OF_WIDTH;
-        setWidth(factSpriteWidth);
-        setHeight(factSpriteHeight);
-        texture = new Texture("run.png");
+        spriteWidth = screenWidth * SPRITE_WIDTH_PART_OF_WIDTH;
+        spriteHeight = screenWidth * SPRITE_HEIGHT_PART_OF_WIDTH;
+        setWidth(screenWidth * DEFAULT_WIDTH);
+        setHeight(screenWidth * DEFAULT_HEIGHT);
+        textureRun = new Texture("run.png");
+        textureStand = new Texture("stand.png");
         points = 0;
         lives = START_LIVES;
 
-
         AnimationBuilder animationBuilder = new AnimationBuilder();
-        animation = animationBuilder.from(texture, 1f / 30f, 5, 6);
+        animation = animationBuilder.from(textureRun, 1f / 30f, 1, 14);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         stateTime = 0;
         direction = Direction.RIGHT;
@@ -110,17 +118,26 @@ public class Player extends GameObject {
     public void renderWithoutBeginEnd(SpriteBatch batch) {
 
         if (currentFrame != null) {
-            if (direction == Direction.LEFT) {
-                batch.draw(currentFrame, getX() + getWidth(), getY(), -getWidth(), getHeight());
+            if (isRun) {
+                if (direction == Direction.LEFT) {
+                    batch.draw(currentFrame, getX() + getWidth() - (getWidth() - spriteWidth) / 2, getY(), -spriteWidth, spriteHeight);
+                } else {
+                    batch.draw(currentFrame, getX() + (getWidth() - spriteWidth) / 2, getY(), spriteWidth, spriteHeight);
+                }
             } else {
-                batch.draw(currentFrame, getX(), getY(), getWidth(), getHeight());
+                if (direction == Direction.LEFT) {
+                    batch.draw(textureStand, getX() + getWidth() - (getWidth() - spriteWidth) / 2, getY(), -spriteWidth, spriteHeight);
+                } else {
+                    batch.draw(textureStand, getX() + (getWidth() - spriteWidth) / 2, getY(), spriteWidth, spriteHeight);
+                }
             }
         }
     }
 
     @Override
     public void dispose() {
-        texture.dispose();
+        textureRun.dispose();
+        textureStand.dispose();
     }
 
     public int getPoints() {

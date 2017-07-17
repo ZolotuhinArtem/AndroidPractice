@@ -12,6 +12,8 @@ import com.zolotukhin.picturegame.GameManager;
 
 public abstract class State {
 
+    public static final int MAX_TOUCHES = 5;
+
     protected OrthographicCamera camera;
     protected Vector3 vector;
     protected GameManager gameManager;
@@ -41,6 +43,8 @@ public abstract class State {
     }
 
     public void onRender(SpriteBatch batch) {
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
     }
 
     public void onPause() {
@@ -59,8 +63,17 @@ public abstract class State {
     }
 
     public void handleInput() {
-        if (Gdx.input.isTouched()) {
-            vector.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+
+        int maxIsTouched = -1;
+
+        for (int i = 0; i < MAX_TOUCHES; i++) {
+            if (Gdx.input.isTouched(i)) {
+                maxIsTouched = i;
+            }
+        }
+
+        if (maxIsTouched >= 0) {
+            vector.set(Gdx.input.getX(maxIsTouched), Gdx.input.getY(maxIsTouched), 0);
             vector = camera.unproject(vector);
             pointX = vector.x;
             pointY = vector.y;

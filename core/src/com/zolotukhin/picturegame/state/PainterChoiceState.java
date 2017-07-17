@@ -62,7 +62,7 @@ public class PainterChoiceState extends State {
         btnStyle.font = font;
 
         menu = new Table();
-        menu.center();
+        menu.center().bottom();
         stage = new Stage();
 
         boolean isFirst = true;
@@ -99,6 +99,7 @@ public class PainterChoiceState extends State {
         pane.setScrollingDisabled(true, false);
         pane.setFillParent(true);
 
+
         stage.addActor(pane);
     }
 
@@ -119,6 +120,7 @@ public class PainterChoiceState extends State {
 
     @Override
     public void onRender(SpriteBatch batch) {
+        super.onRender(batch);
         batch.begin();
         stage.draw();
         batch.end();

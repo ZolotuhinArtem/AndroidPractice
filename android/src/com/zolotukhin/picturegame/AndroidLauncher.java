@@ -7,6 +7,9 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.zolotukhin.picturegame.PictureGame;
 
 public class AndroidLauncher extends AndroidApplication {
+
+	public static final float SCREEN_WIDTH = 229;
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -15,7 +18,7 @@ public class AndroidLauncher extends AndroidApplication {
 		int width = getResources().getDisplayMetrics().widthPixels;
 		int height = getResources().getDisplayMetrics().heightPixels;
 
-		config.useGyroscope = false;
+		config.useGyroscope = false;c
 		config.useCompass = false;
 		config.useAccelerometer = false;
 
