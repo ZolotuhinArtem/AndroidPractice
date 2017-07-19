@@ -54,7 +54,7 @@ public class MenuState extends State {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
         labelStyle.fontColor = Color.WHITE;
-        Label label = new Label("GAME NAME!", labelStyle);
+        Label label = new Label("PICTURE CATCH!", labelStyle);
         label.setAlignment(Align.center);
 
 

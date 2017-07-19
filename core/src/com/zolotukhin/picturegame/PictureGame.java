@@ -18,6 +18,7 @@ public class PictureGame extends ApplicationAdapter implements AbstractGame {
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
 
+
 	}
 
 	@Override
@@ -56,6 +57,7 @@ public class PictureGame extends ApplicationAdapter implements AbstractGame {
 		batch.dispose();
         gsm.dispose();
 	}
+
 
 	@Override
 	public int getScreenWidth() {

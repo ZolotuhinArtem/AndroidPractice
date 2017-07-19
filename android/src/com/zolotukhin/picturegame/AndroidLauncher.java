@@ -18,7 +18,7 @@ public class AndroidLauncher extends AndroidApplication {
 		int width = getResources().getDisplayMetrics().widthPixels;
 		int height = getResources().getDisplayMetrics().heightPixels;
 
-		config.useGyroscope = false;c
+		config.useGyroscope = false;
 		config.useCompass = false;
 		config.useAccelerometer = false;
 

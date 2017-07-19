@@ -1,5 +1,7 @@
 package com.zolotukhin.picturegame.state.gamestate;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -69,8 +71,12 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     private Boolean isStarted;
 
+    private Music music;
+
     public GameState(GameManager gsm) {
         super(gsm);
+
+
 
         isStarted = false;
         font = gameManager.getResourceManager().getNewInstanceOfDefaultFont(FONT_SIZE * getUnit(), Color.WHITE);
@@ -109,6 +115,10 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
         fallItemFactory = new SimpleFallItemFactory(gsm.getScreenWidth(), gsm.getScreenHeight(), player, floor, collisionListener);
 
         simpleObjects.add(floor);
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("main_theme.mp3"));
+        music.setLooping(true);
+        music.play();
     }
 
     private Painter loadPainter() {
@@ -261,6 +271,10 @@ public class GameState extends State implements Button.ButtonEventListener, Supe
 
     @Override
     public void onDispose() {
+
+        music.stop();
+        music.dispose();
+
         for (FallingItem i : fallingItems) {
             i.dispose();
         }
